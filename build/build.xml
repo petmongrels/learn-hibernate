@@ -1,0 +1,28 @@
+<project name="learn-hibernate" default="sql.test.data">
+    <loadproperties srcFile="build.properties"/>
+
+    <target name="sql.db" depends="sql.no.db">
+        <sql-exec file="create-database.sql"/>
+    </target>
+
+    <target name="sql.no.db">
+        <sql-exec file="drop-database.sql"/>
+    </target>
+
+    <target name="sql.schema" depends="sql.db">
+        <sql-exec file="create-schema.sql"/>
+    </target>
+
+    <target name="sql.test.data" depends="sql.schema">
+        <sql-exec file="test-data.sql"/>
+    </target>
+
+    <macrodef name="sql-exec">
+        <attribute name="file"/>
+        <sequential>
+            <exec executable="sqlcmd" dir="../database/sqlserver">
+                <arg line="-S ${sql.server} -b -E -i @{file} -v DatabaseName=LearnHibernate"/>
+            </exec>
+        </sequential>
+    </macrodef>
+</project>
