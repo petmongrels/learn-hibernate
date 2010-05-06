@@ -2,6 +2,7 @@ package database.sqlserver;
 
 import configuration.AppConfiguration;
 import database.DatabaseResource;
+import database.TimeoutException;
 import net.sourceforge.jtds.jdbc.Driver;
 
 import java.sql.*;
@@ -17,7 +18,7 @@ public class SqlServerConnection {
 
     public SqlServerConnection(AppConfiguration configuration, int isolationLevel) throws Exception {
         this.configuration = configuration;
-        String connectionUrl = "jdbc:jtds:sqlserver://viveksingh:1433/LearnHibernate;SelectMethod=cursor";
+        String connectionUrl = "jdbc:jtds:sqlserver://" + configuration.sqlServer() + ":1433/LearnHibernate;SelectMethod=cursor";
         Class.forName(Driver.class.getName());
         connection = DriverManager.getConnection(connectionUrl, configuration.sqlServerUser(), configuration.sqlServerPassword());
         connection.setTransactionIsolation(isolationLevel);
@@ -28,12 +29,22 @@ public class SqlServerConnection {
     }
 
     public Object[] queryValues(String sqlQuery, Object ... parameters) throws Exception {
-        PreparedStatement statement = preparedStatement(sqlQuery);
-        for (int i = 1; i <= parameters.length; i++) {
-            statement.setObject(i, parameters[i - 1]);
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = preparedStatement(sqlQuery, parameters);
+            resultSet = statement.executeQuery();
+            resultSet.next();
+            ArrayList list = getRow(resultSet);
+            return list.toArray();
+        } catch (SQLException e) {
+            throw getException(e);
+        } finally {
+            DatabaseResource.closeSafely(statement, resultSet);
         }
-        ResultSet resultSet = statement.executeQuery();
-        resultSet.next();
+    }
+
+    private ArrayList getRow(ResultSet resultSet) {
         ArrayList list = new ArrayList(1);
         int resultIndex = 1;
         while (true) {
@@ -44,8 +55,34 @@ public class SqlServerConnection {
                 break;
             }
         }
-        DatabaseResource.closeSafely(statement, resultSet);
-        return list.toArray();
+        return list;
+    }
+
+    private PreparedStatement preparedStatement(String sqlQuery, Object[] parameters) throws SQLException {
+        PreparedStatement statement = preparedStatement(sqlQuery);
+        for (int i = 1; i <= parameters.length; i++) {
+            statement.setObject(i, parameters[i - 1]);
+        }
+        return statement;
+    }
+
+    public ArrayList<Object[]> queryRows(String sqlQuery, Object ... parameters) throws Exception {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = preparedStatement(sqlQuery, parameters);
+            resultSet = statement.executeQuery();
+            ArrayList<Object[]> rows = new ArrayList<Object[]>();
+            while (resultSet.next()) {
+                ArrayList list = getRow(resultSet);
+                rows.add(list.toArray());
+            }
+            return rows;
+        } catch (SQLException e) {
+            throw getException(e);
+        } finally {
+            DatabaseResource.closeSafely(statement, resultSet);
+        }
     }
 
     private PreparedStatement preparedStatement(String sqlQuery) throws SQLException {
@@ -55,13 +92,25 @@ public class SqlServerConnection {
     }
 
     public void execute(String sql, Object ... parameters) throws Exception {
-        PreparedStatement statement = preparedStatement(sql);
-        statement.setQueryTimeout(5);
-        for (int i = 1; i <= parameters.length; i++) {
-            statement.setObject(i, parameters[i - 1]);
+        PreparedStatement statement = null;
+        try {
+            statement = preparedStatement(sql);
+            statement.setQueryTimeout(5);
+            for (int i = 1; i <= parameters.length; i++) {
+                statement.setObject(i, parameters[i - 1]);
+            }
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw getException(e);
         }
-        statement.executeUpdate();
-        DatabaseResource.closeSafely(statement);
+        finally {
+            DatabaseResource.closeSafely(statement);
+        }
+    }
+
+    private Exception getException(SQLException e) throws SQLException {
+        if (e.getMessage().equals("The query has timed out.")) return new TimeoutException(e);
+        return e;
     }
 
     public void beginTransaction() throws Exception {
@@ -74,5 +123,9 @@ public class SqlServerConnection {
 
     public void commit() throws Exception {
         connection.commit();
+    }
+
+    public void noTransaction() throws Exception {
+        connection.setAutoCommit(true);
     }
 }

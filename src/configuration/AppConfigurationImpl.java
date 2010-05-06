@@ -28,4 +28,8 @@ public class AppConfigurationImpl implements AppConfiguration {
     public int queryTimeoutInSeconds() {
         return new Integer(properties.getProperty("query.timeout.in.secs"));
     }
+
+    public String sqlServer() {
+        return properties.getProperty("sqlserver");
+    }
 }

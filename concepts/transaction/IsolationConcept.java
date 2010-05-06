@@ -1,12 +1,14 @@
 package transaction;
 
 import database.DatabaseUser;
+import database.TimeoutException;
+import domain.Customer;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class IsolationConcept {
@@ -40,6 +42,17 @@ public class IsolationConcept {
         assert changedEmail.equals(newEmail);
     }
 
+//    @Test
+    public void readCommited_WhenSnapshotModeIsOff() throws Exception {
+        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
+        final String newEmail = newEmail();
+        you.updateCustomerEmail(AshokKumar, newEmail);
+        try {
+            i.getCustomerEmail(AshokKumar);
+        } catch (TimeoutException ignored) {
+        }
+    }
+
     @Test
     public void readCommited() throws Exception {
         i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
@@ -66,10 +79,42 @@ public class IsolationConcept {
         final String email = i.getCustomerEmail(AshokKumar);
         try {
             you.updateCustomerEmail(AshokKumar, newEmail());
-        } catch (SQLException e) {
-            if (!e.getMessage().equals("The query has timed out.")) throw e;
+        } catch (TimeoutException e) {
+            assert email.equals(i.getCustomerEmail(AshokKumar));
         }
-        assert email.equals(i.getCustomerEmail(AshokKumar));
+    }
+
+    @Test
+    public void repeatableReadBlockedByOthersInserts_Inefficient() throws Exception {
+        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
+        i.getCustomersHavingInName("Ashok");
+        you.createCustomer("Ashok Mitra", "amitra@yahoo.com");
+        try {
+            i.getCustomersHavingInName("Ashok");
+        } catch (TimeoutException ignored) {
+        }
+    }
+
+    @Test
+    public void phantomRead() throws Exception {
+        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
+        ArrayList<Customer> customersList = i.getCustomersHavingInName("Ashok");
+        you.createCustomer("Ashok Mitra", "amitra@yahoo.com");
+        you.commit();
+        ArrayList<Customer> newCustomersList = i.getCustomersHavingInName("Ashok");
+        assert customersList.size() != newCustomersList.size();
+    }
+
+    @Test
+    public void noPhantomRead() throws Exception {
+        i = new DatabaseUser(Connection.TRANSACTION_SERIALIZABLE);
+        ArrayList<Customer> customersList = i.getCustomersHavingInName("Ashok");
+        try {
+            you.createCustomer("Ashok Mitra", "amitra@yahoo.com");
+        } catch (TimeoutException e) {
+            ArrayList<Customer> newCustomersList = i.getCustomersHavingInName("Ashok");
+            assert customersList.size() == newCustomersList.size();
+        }
     }
 
     private String newEmail() {
