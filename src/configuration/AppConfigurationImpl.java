@@ -17,11 +17,15 @@ public class AppConfigurationImpl implements AppConfiguration {
 
     private static Properties properties;
 
-    public String SqlServerUser(){
+    public String sqlServerUser(){
         return properties.getProperty("sqlserver.user"); 
     }
 
-    public String SqlServerPassword(){
+    public String sqlServerPassword(){
         return properties.getProperty("sqlserver.password"); 
+    }
+
+    public int queryTimeoutInSeconds() {
+        return new Integer(properties.getProperty("query.timeout.in.secs"));
     }
 }

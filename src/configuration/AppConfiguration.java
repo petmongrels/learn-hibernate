@@ -1,6 +1,7 @@
 package configuration;
 
 public interface AppConfiguration {
-    String SqlServerUser();
-    String SqlServerPassword();
+    String sqlServerUser();
+    String sqlServerPassword();
+    int queryTimeoutInSeconds();
 }

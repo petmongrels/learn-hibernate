@@ -20,7 +20,7 @@ public class AtomicityConcept {
     private Account account;
 
     @BeforeTest
-    public void SetUp() throws Exception {
+    public void setUp() throws Exception {
         connection = new SqlServerConnection(new AppConfigurationImpl());
         customerRepository = new CustomerRepository(connection);
         account = customerRepository.getAccount("SB12345678");
@@ -28,12 +28,12 @@ public class AtomicityConcept {
     }
 
     @AfterTest
-    public void TearDown() throws Exception {
+    public void tearDown() throws Exception {
         connection.close();
     }
 
     @Test
-    public void NoAtomicity() throws Exception {
+    public void noAtomicity() throws Exception {
         try {
             BankTransaction bankTransaction = account.withdraw(new BigDecimal(5000.50));
 
@@ -43,12 +43,12 @@ public class AtomicityConcept {
             Assert.fail("BankTransaction insert should have failed");
         } catch (SQLException e) {
             Account account = customerRepository.getAccount("SB12345678");
-            Assert.assertFalse(account.getBalance().equals(balance));
+            assert !account.getBalance().equals(balance);
         }
     }
 
     @Test
-    public void AtomicYay() throws Exception {
+    public void atomicYay() throws Exception {
          try {
             connection.beginTransaction();
             BankTransaction bankTransaction = account.withdraw(new BigDecimal(5000.50));
@@ -60,7 +60,7 @@ public class AtomicityConcept {
         } catch (SQLException e) {
             connection.rollback();
             Account account = customerRepository.getAccount("SB12345678");
-            Assert.assertTrue(account.getBalance().equals(balance));
+            assert account.getBalance().equals(balance);
         }
     }
 }

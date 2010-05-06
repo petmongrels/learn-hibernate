@@ -9,11 +9,18 @@ import java.util.ArrayList;
 
 public class SqlServerConnection {
     private Connection connection;
+    private AppConfiguration configuration;
 
     public SqlServerConnection(AppConfiguration configuration) throws Exception {
+        this(configuration, Connection.TRANSACTION_READ_COMMITTED);
+    }
+
+    public SqlServerConnection(AppConfiguration configuration, int isolationLevel) throws Exception {
+        this.configuration = configuration;
         String connectionUrl = "jdbc:jtds:sqlserver://viveksingh:1433/LearnHibernate;SelectMethod=cursor";
         Class.forName(Driver.class.getName());
-        connection = DriverManager.getConnection(connectionUrl, configuration.SqlServerUser(), configuration.SqlServerPassword());
+        connection = DriverManager.getConnection(connectionUrl, configuration.sqlServerUser(), configuration.sqlServerPassword());
+        connection.setTransactionIsolation(isolationLevel);
     }
 
     public void close() throws Exception {
@@ -21,7 +28,7 @@ public class SqlServerConnection {
     }
 
     public Object[] queryValues(String sqlQuery, Object ... parameters) throws Exception {
-        PreparedStatement statement = connection.prepareStatement(sqlQuery);
+        PreparedStatement statement = preparedStatement(sqlQuery);
         for (int i = 1; i <= parameters.length; i++) {
             statement.setObject(i, parameters[i - 1]);
         }
@@ -41,8 +48,15 @@ public class SqlServerConnection {
         return list.toArray();
     }
 
+    private PreparedStatement preparedStatement(String sqlQuery) throws SQLException {
+        final PreparedStatement statement = connection.prepareStatement(sqlQuery);
+        statement.setQueryTimeout(configuration.queryTimeoutInSeconds());
+        return statement;
+    }
+
     public void execute(String sql, Object ... parameters) throws Exception {
-        PreparedStatement statement = connection.prepareStatement(sql);
+        PreparedStatement statement = preparedStatement(sql);
+        statement.setQueryTimeout(5);
         for (int i = 1; i <= parameters.length; i++) {
             statement.setObject(i, parameters[i - 1]);
         }
@@ -56,5 +70,9 @@ public class SqlServerConnection {
 
     public void rollback() throws Exception {
         connection.rollback();
+    }
+
+    public void commit() throws Exception {
+        connection.commit();
     }
 }
