@@ -24,13 +24,21 @@ public class CustomerRepository {
         return (String) customerValues[0];
     }
 
-    public ArrayList<Customer> getCustomersHavingInName(String nameToken) throws Exception {
-        final ArrayList<Object[]> rows = connection.queryRows("select Id, Name from Customers where name like ?", "%" + nameToken + "%");
+    public ArrayList<Customer> getCustomersHavingInName(String token) throws Exception {
+        return getCustomers(token, "select Id, Name from Customers where Name like ?");
+    }
+
+    private ArrayList<Customer> getCustomers(String token, String sqlQuery) throws Exception {
+        final ArrayList<Object[]> rows = connection.queryRows(sqlQuery, "%" + token + "%");
         final ArrayList<Customer> customers = new ArrayList<Customer>();
         for(Object[] row : rows) {
             customers.add(new Customer((Integer)row[0], (String)row[1]));
         }
         return customers;
+    }
+
+    public ArrayList<Customer> getCustomersHavingInEmail(String token) throws Exception {
+        return getCustomers(token, "select Id, Name from Customers where Email like ?");
     }
 
     public void createCustomer(String name, String email) throws Exception {

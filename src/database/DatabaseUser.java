@@ -41,7 +41,15 @@ public class DatabaseUser {
         return customerRepository.getCustomersHavingInName(nameToken);
     }
 
+    public ArrayList<Customer> getCustomersHavingInEmail(String emailToken) throws Exception {
+        return customerRepository.getCustomersHavingInEmail(emailToken);
+    }
+
     public void createCustomer(String name, String email) throws Exception {
         customerRepository.createCustomer(name, email);
+    }
+
+    public void noTransaction() throws Exception {
+        connection.noTransaction();
     }
 }

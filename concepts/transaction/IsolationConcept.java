@@ -1,7 +1,7 @@
 package transaction;
 
 import database.DatabaseUser;
-import database.TimeoutException;
+import database.BlockedException;
 import domain.Customer;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -49,7 +49,8 @@ public class IsolationConcept {
         you.updateCustomerEmail(AshokKumar, newEmail);
         try {
             i.getCustomerEmail(AshokKumar);
-        } catch (TimeoutException ignored) {
+            assert false;
+        } catch (BlockedException ignored) {
         }
     }
 
@@ -79,9 +80,28 @@ public class IsolationConcept {
         final String email = i.getCustomerEmail(AshokKumar);
         try {
             you.updateCustomerEmail(AshokKumar, newEmail());
-        } catch (TimeoutException e) {
+            assert false;
+        } catch (BlockedException e) {
             assert email.equals(i.getCustomerEmail(AshokKumar));
         }
+    }
+
+    @Test
+    public void lockEscalation() throws Exception {
+        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
+        i.getCustomersHavingInEmail("bollywood");
+        try {
+            you.updateCustomerEmail(AshokKumar, newEmail());
+            assert false;
+        } catch (BlockedException ignored) {
+        }
+    }
+
+    @Test
+    public void noLockEscalation() throws Exception {
+        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
+        i.getCustomersHavingInEmail("thoughtworks");
+        you.updateCustomerEmail("Dharmendra", newEmail());
     }
 
     @Test
@@ -91,7 +111,8 @@ public class IsolationConcept {
         you.createCustomer("Ashok Mitra", "amitra@yahoo.com");
         try {
             i.getCustomersHavingInName("Ashok");
-        } catch (TimeoutException ignored) {
+            assert false;
+        } catch (BlockedException ignored) {
         }
     }
 
@@ -111,7 +132,8 @@ public class IsolationConcept {
         ArrayList<Customer> customersList = i.getCustomersHavingInName("Ashok");
         try {
             you.createCustomer("Ashok Mitra", "amitra@yahoo.com");
-        } catch (TimeoutException e) {
+            assert false;
+        } catch (BlockedException e) {
             ArrayList<Customer> newCustomersList = i.getCustomersHavingInName("Ashok");
             assert customersList.size() == newCustomersList.size();
         }

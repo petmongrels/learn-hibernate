@@ -1,8 +1,8 @@
 package database.sqlserver;
 
 import configuration.AppConfiguration;
+import database.BlockedException;
 import database.DatabaseResource;
-import database.TimeoutException;
 import net.sourceforge.jtds.jdbc.Driver;
 
 import java.sql.*;
@@ -28,7 +28,7 @@ public class SqlServerConnection {
         connection.close();
     }
 
-    public Object[] queryValues(String sqlQuery, Object ... parameters) throws Exception {
+    public Object[] queryValues(String sqlQuery, Object... parameters) throws Exception {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
@@ -66,12 +66,31 @@ public class SqlServerConnection {
         return statement;
     }
 
-    public ArrayList<Object[]> queryRows(String sqlQuery, Object ... parameters) throws Exception {
+    public ArrayList<Object[]> queryRows(String sqlQuery, Object... parameters) throws Exception {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
             statement = preparedStatement(sqlQuery, parameters);
             resultSet = statement.executeQuery();
+            ArrayList<Object[]> rows = new ArrayList<Object[]>();
+            while (resultSet.next()) {
+                ArrayList list = getRow(resultSet);
+                rows.add(list.toArray());
+            }
+            return rows;
+        } catch (SQLException e) {
+            throw getException(e);
+        } finally {
+            DatabaseResource.closeSafely(statement, resultSet);
+        }
+    }
+
+    public ArrayList<Object[]> queryRows(String sqlQuery) throws Exception {
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sqlQuery);
             ArrayList<Object[]> rows = new ArrayList<Object[]>();
             while (resultSet.next()) {
                 ArrayList list = getRow(resultSet);
@@ -91,7 +110,7 @@ public class SqlServerConnection {
         return statement;
     }
 
-    public void execute(String sql, Object ... parameters) throws Exception {
+    public void execute(String sql, Object... parameters) throws Exception {
         PreparedStatement statement = null;
         try {
             statement = preparedStatement(sql);
@@ -102,14 +121,13 @@ public class SqlServerConnection {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw getException(e);
-        }
-        finally {
+        } finally {
             DatabaseResource.closeSafely(statement);
         }
     }
 
     private Exception getException(SQLException e) throws SQLException {
-        if (e.getMessage().equals("The query has timed out.")) return new TimeoutException(e);
+        if (e.getMessage().equals("The query has timed out.")) return new BlockedException(e);
         return e;
     }
 
