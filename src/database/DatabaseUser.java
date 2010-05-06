@@ -17,12 +17,16 @@ public class DatabaseUser {
         connection.beginTransaction();
     }
 
-    public void updateCustomerEmail(String name, String email) throws Exception {
-        connection.execute("update Customers set Email = ? where Name = ?", email, name);
+    public int updateCustomerEmail(String name, String email) throws Exception {
+        return connection.execute("update Customers set Email = ? where Name = ?", email, name);
     }
 
-    public String getCustomerEmail(String name) throws Exception {
-        return customerRepository.getCustomerEmail(name);
+    public int updateCustomerEmail(String name, String email, int version) throws Exception {
+        return connection.execute("update Customers set Email = ?, Version = ? where Name = ? and Version = ?", email, version + 1, name, version);
+    }
+
+    public Customer getCustomer(String name) throws Exception {
+        return customerRepository.getCustomer(name);
     }
 
     public void rollback() throws Exception {

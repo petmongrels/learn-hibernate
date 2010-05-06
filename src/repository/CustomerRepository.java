@@ -19,26 +19,30 @@ public class CustomerRepository {
         return new Account((Integer) accountDetails[0], (BigDecimal) accountDetails[1], accountNumber);
     }
 
-    public String getCustomerEmail(String name) throws Exception {
-        Object[] customerValues = connection.queryValues("select Email from Customers where Name = ?", name);
-        return (String) customerValues[0];
+    public Customer getCustomer(String name) throws Exception {
+        Object[] row = connection.queryValues("select Id, Name, Email, Version from Customers where Name = ?", name);
+        return createCustomer(row);
+    }
+
+    private Customer createCustomer(Object[] row) {
+        return new Customer((Integer)row[0], (String)row[1], (String)row[2], (Integer)row[3]);
     }
 
     public ArrayList<Customer> getCustomersHavingInName(String token) throws Exception {
-        return getCustomers(token, "select Id, Name from Customers where Name like ?");
+        return getCustomers(token, "select Id, Name, Email, Version from Customers where Name like ?");
     }
 
     private ArrayList<Customer> getCustomers(String token, String sqlQuery) throws Exception {
         final ArrayList<Object[]> rows = connection.queryRows(sqlQuery, "%" + token + "%");
         final ArrayList<Customer> customers = new ArrayList<Customer>();
         for(Object[] row : rows) {
-            customers.add(new Customer((Integer)row[0], (String)row[1]));
+            customers.add(createCustomer(row));
         }
         return customers;
     }
 
     public ArrayList<Customer> getCustomersHavingInEmail(String token) throws Exception {
-        return getCustomers(token, "select Id, Name from Customers where Email like ?");
+        return getCustomers(token, "select Id, Name, Email, Version from Customers where Email like ?");
     }
 
     public void createCustomer(String name, String email) throws Exception {

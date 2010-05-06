@@ -1,7 +1,8 @@
 package transaction;
 
-import database.DatabaseUser;
+import data.Customers;
 import database.BlockedException;
+import database.DatabaseUser;
 import domain.Customer;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -14,7 +15,6 @@ import java.util.Calendar;
 public class IsolationConcept {
     private DatabaseUser you;
     private DatabaseUser i;
-    private final String AshokKumar = "Ashok Kumar";
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -37,18 +37,18 @@ public class IsolationConcept {
     public void readUncommited() throws Exception {
         i = new DatabaseUser(Connection.TRANSACTION_READ_UNCOMMITTED);
         final String newEmail = newEmail();
-        you.updateCustomerEmail(AshokKumar, newEmail);
-        String changedEmail = i.getCustomerEmail("Ashok Kumar");
-        assert changedEmail.equals(newEmail);
+        you.updateCustomerEmail(Customers.AshokKumar, newEmail);
+        Customer customer = i.getCustomer("Ashok Kumar");
+        assert customer.getEmail().equals(newEmail);
     }
 
 //    @Test
     public void readCommited_WhenSnapshotModeIsOff() throws Exception {
         i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
         final String newEmail = newEmail();
-        you.updateCustomerEmail(AshokKumar, newEmail);
+        you.updateCustomerEmail(Customers.AshokKumar, newEmail);
         try {
-            i.getCustomerEmail(AshokKumar);
+            i.getCustomer(Customers.AshokKumar);
             assert false;
         } catch (BlockedException ignored) {
         }
@@ -58,31 +58,42 @@ public class IsolationConcept {
     public void readCommited() throws Exception {
         i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
         final String newEmail = newEmail();
-        you.updateCustomerEmail(AshokKumar, newEmail);
-        String changedEmail = i.getCustomerEmail(AshokKumar);
-        assert !changedEmail.equals(newEmail);
+        you.updateCustomerEmail(Customers.AshokKumar, newEmail);
+        Customer customer = i.getCustomer(Customers.AshokKumar);
+        assert !customer.getEmail().equals(newEmail);
 
-        assert newEmail.equals(you.getCustomerEmail(AshokKumar));
+        assert newEmail.equals(you.getCustomer(Customers.AshokKumar).getEmail());
+    }
+
+    @Test
+    public void uploadOnSameRowBlocks_NotEfficient() throws Exception {
+        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
+        you.updateCustomerEmail(Customers.AshokKumar, newEmail());
+        try {
+            i.updateCustomerEmail(Customers.AshokKumar, newEmail());
+            assert false;
+        } catch (BlockedException ignored) {
+        }
     }
 
     @Test
     public void nonRepeatableRead() throws Exception {
         i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
-        final String email = i.getCustomerEmail(AshokKumar);
-        you.updateCustomerEmail(AshokKumar, newEmail());
+        Customer customer = i.getCustomer(Customers.AshokKumar);
+        you.updateCustomerEmail(Customers.AshokKumar, newEmail());
         you.commit();
-        assert !email.equals(i.getCustomerEmail(AshokKumar));
+        assert !customer.getEmail().equals(i.getCustomer(Customers.AshokKumar).getEmail());
     }
 
     @Test
     public void repeatableRead() throws Exception {
         i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
-        final String email = i.getCustomerEmail(AshokKumar);
+        Customer customer = i.getCustomer(Customers.AshokKumar);
         try {
-            you.updateCustomerEmail(AshokKumar, newEmail());
+            you.updateCustomerEmail(Customers.AshokKumar, newEmail());
             assert false;
         } catch (BlockedException e) {
-            assert email.equals(i.getCustomerEmail(AshokKumar));
+            assert customer.getEmail().equals(i.getCustomer(Customers.AshokKumar).getEmail());
         }
     }
 
@@ -91,7 +102,7 @@ public class IsolationConcept {
         i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
         i.getCustomersHavingInEmail("bollywood");
         try {
-            you.updateCustomerEmail(AshokKumar, newEmail());
+            you.updateCustomerEmail(Customers.AshokKumar, newEmail());
             assert false;
         } catch (BlockedException ignored) {
         }

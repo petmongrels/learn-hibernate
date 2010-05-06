@@ -110,7 +110,7 @@ public class SqlServerConnection {
         return statement;
     }
 
-    public void execute(String sql, Object... parameters) throws Exception {
+    public int execute(String sql, Object... parameters) throws Exception {
         PreparedStatement statement = null;
         try {
             statement = preparedStatement(sql);
@@ -118,7 +118,7 @@ public class SqlServerConnection {
             for (int i = 1; i <= parameters.length; i++) {
                 statement.setObject(i, parameters[i - 1]);
             }
-            statement.executeUpdate();
+            return statement.executeUpdate();
         } catch (SQLException e) {
             throw getException(e);
         } finally {
