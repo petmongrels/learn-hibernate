@@ -1,11 +1,16 @@
 package domain;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class Account {
     private int id;
     private BigDecimal balance;
     private String accountNumber;
+    private List<BankTransaction> transactions;
+
+    protected Account() {
+    }
 
     public Account(int id, BigDecimal balance, String accountNumber) {
         this.id = id;
@@ -24,5 +29,13 @@ public class Account {
 
     public BigDecimal getBalance() {
         return balance;
+    }
+
+    public BigDecimal totalTransactedAmount() {
+        BigDecimal transactedAmount = new BigDecimal(0);        
+        for (BankTransaction transaction : transactions) {
+            transactedAmount = transactedAmount.add(transaction.getAmount());
+        }
+        return transactedAmount;
     }
 }

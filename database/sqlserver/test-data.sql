@@ -14,13 +14,25 @@ insert into Customers (Name, Email) values ('Asrani', 'asrani@bollywood.com')
 
 -- Accounts
 declare @AshokKumarId int
-declare @AshokKumarAccountNumber varchar(50)
-select @AshokKumarAccountNumber = 'SB12345678'
+declare @AshokKumarSavingsAccountNumber varchar(50)
+select @AshokKumarSavingsAccountNumber = 'SB12345678'
 select @AshokKumarId = Id From Customers where Name = @AshokKumarName
-insert into Accounts (Number, CustomerId, Balance) values (@AshokKumarAccountNumber, @AshokKumarId, 200000.00)
+insert into Accounts (Number, CustomerId, Balance) values (@AshokKumarSavingsAccountNumber, @AshokKumarId, 200000.00)
+
+declare @AshokKumarCurrentAccountNumber varchar(50)
+select @AshokKumarCurrentAccountNumber = 'CA4234789'
+insert into Accounts (Number, CustomerId, Balance) values (@AshokKumarCurrentAccountNumber, @AshokKumarId, 7000.00)
 
 -- Transactions
-declare @AshokKumarAccountId int
-select @AshokKumarAccountId = Id From Accounts where Number = @AshokKumarAccountNumber
-insert into Transactions (Amount, Type, AccountId, Description) values (100.00, 'Debit', @AshokKumarAccountId, 'Pocket Money')
+declare @AshokKumarSavingsAccountId int
+select @AshokKumarSavingsAccountId = Id From Accounts where Number = @AshokKumarSavingsAccountNumber
+insert into Transactions (Amount, Type, AccountId, Description) values (100.00, 'Debit', @AshokKumarSavingsAccountId, 'Pocket Money')
+insert into Transactions (Amount, Type, AccountId, Description) values (200.00, 'Debit', @AshokKumarSavingsAccountId, 'Credit Card')
+insert into Transactions (Amount, Type, AccountId, Description) values (300.00, 'Debit', @AshokKumarSavingsAccountId, 'ATM')
+
+declare @AshokKumarCurrentAccountId int
+select @AshokKumarCurrentAccountId = Id From Accounts where Number = @AshokKumarCurrentAccountNumber
+insert into Transactions (Amount, Type, AccountId, Description) values (100.00, 'Debit', @AshokKumarCurrentAccountId, 'Pocket Money')
+insert into Transactions (Amount, Type, AccountId, Description) values (200.00, 'Debit', @AshokKumarCurrentAccountId, 'Credit Card')
+insert into Transactions (Amount, Type, AccountId, Description) values (300.00, 'Debit', @AshokKumarCurrentAccountId, 'ATM')
 GO

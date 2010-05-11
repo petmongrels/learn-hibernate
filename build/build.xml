@@ -2,7 +2,7 @@
     <loadproperties srcFile="build.properties"/>
 
     <target name="sql.db" depends="sql.no.db">
-        <sql-exec file="create-database.sql"/>
+        <sql-exec file="database.sql"/>
     </target>
 
     <target name="sql.no.db">
@@ -10,7 +10,7 @@
     </target>
 
     <target name="sql.schema" depends="sql.db">
-        <sql-exec file="create-schema.sql"/>
+        <sql-exec file="schema.sql"/>
     </target>
 
     <target name="sql.test.data" depends="sql.schema">

@@ -1,0 +1,14 @@
+<?xml version="1.0"?><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="domain">
+    <class name="Account" table="Accounts" lazy="true">
+        <id name="id" column="Id" access="field">
+            <generator class="native"/>
+        </id>
+        <property name="balance" access="field"/>
+        <bag name="transactions" access="field" cascade="all-delete-orphan" lazy="true" batch-size="6">
+            <key column="AccountId"/>
+            <one-to-many class="BankTransaction"/>
+        </bag>        
+    </class>
+</hibernate-mapping>

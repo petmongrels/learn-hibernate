@@ -66,7 +66,7 @@ public class IsolationConcept {
     }
 
     @Test
-    public void uploadOnSameRowBlocks_NotEfficient() throws Exception {
+    public void uploadOnSameRowBlocksNotEfficient() throws Exception {
         i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
         you.updateCustomerEmail(Customers.AshokKumar, newEmail());
         try {
