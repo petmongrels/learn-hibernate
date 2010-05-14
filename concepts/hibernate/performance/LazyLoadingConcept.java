@@ -1,10 +1,19 @@
 package hibernate.performance;
 
+import domain.City;
 import domain.Customer;
-import hibernate.ConceptBase;
+import hibernate.HibernateConceptBase;
+import hibernate.ISessionFactoryWrapper;
+import hibernate.SessionFactoryWrapper;
 import org.testng.annotations.Test;
 
-public class LazyLoadingConcept extends ConceptBase {
+import java.util.List;
+
+public class LazyLoadingConcept extends HibernateConceptBase {
+    protected ISessionFactoryWrapper sessionFactoryWrapper() {
+        return new SessionFactoryWrapper();
+    }
+    
     @Test
     public void loadObjectDoesntLoadTheEntity() {
         Customer customer = (Customer) session.load(Customer.class, 1);
@@ -33,9 +42,20 @@ public class LazyLoadingConcept extends ConceptBase {
     }
 
     @Test
-    public void nPlusOneQueryProblem() {
-        //remove the batch-size on the Account-BankTransaction mapping. Also note the batch size is of the parent not of number of children.
+    public void manyToOne() {
         Customer customer = (Customer) session.load(Customer.class, 1);
-        customer.totalTransactedAmount();
+        System.out.println("session.load(Customer.class, 1)");
+        City city = customer.getCity();
+        System.out.println("customer.getCity()");
+        System.out.println(city.getClass());
+        System.out.println("City: " + city.getName());
+    }
+
+    @Test
+    public void nPlusOneQueryForManyToOne() {
+        List customers = session.createCriteria(Customer.class).list();
+        for(Object item : customers) {
+            ((Customer) item).getCity().getName();
+        }
     }
 }

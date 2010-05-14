@@ -1,16 +1,24 @@
-use LearnHibernate
+use $(DatabaseName)
+-- Cities
+insert into Cities (Name) values ('Bangalore')
+insert into Cities (Name) values ('Mumbai')
+declare @Bangalore int
+declare @Mumbai int
+select @Bangalore = Id from Cities where Name = 'Bangalore'
+select @Mumbai = Id from Cities where Name = 'Mumbai'
+
 -- Customers
 declare @AshokKumarName nvarchar(50)
 select @AshokKumarName = 'Ashok Kumar'
-insert into Customers (Name, Email) values (@AshokKumarName, 'akumar@thoughtworks.com')
-insert into Customers (Name, Email) values ('Amitabh Bachchan', 'amitabh@bollywood.com')
-insert into Customers (Name, Email) values ('Dharmendra', 'Dharmendra@bollywood.com')
-insert into Customers (Name, Email) values ('Hema Malini', 'hema@bollywood.com')
-insert into Customers (Name, Email) values ('Sanjiv Kumar', 'skumar@bollywood.com')
-insert into Customers (Name, Email) values ('Amjad Khan', 'amjad@bollywood.com')
-insert into Customers (Name, Email) values ('A. K. Hangal', 'akhangal@bollywood.com')
-insert into Customers (Name, Email) values ('Leela Mishra', 'lmishra@bollywood.com')
-insert into Customers (Name, Email) values ('Asrani', 'asrani@bollywood.com')
+insert into Customers (Name, Email, CityId) values (@AshokKumarName, 'akumar@thoughtworks.com', @Bangalore)
+insert into Customers (Name, Email, CityId) values ('Amitabh Bachchan', 'amitabh@bollywood.com', @Bangalore)
+insert into Customers (Name, Email, CityId) values ('Dharmendra', 'Dharmendra@bollywood.com', @Bangalore)
+insert into Customers (Name, Email, CityId) values ('Hema Malini', 'hema@bollywood.com', @Bangalore)
+insert into Customers (Name, Email, CityId) values ('Sanjiv Kumar', 'skumar@bollywood.com', @Bangalore)
+insert into Customers (Name, Email, CityId) values ('Amjad Khan', 'amjad@bollywood.com', @Mumbai)
+insert into Customers (Name, Email, CityId) values ('A. K. Hangal', 'akhangal@bollywood.com', @Mumbai)
+insert into Customers (Name, Email, CityId) values ('Leela Mishra', 'lmishra@bollywood.com', @Mumbai)
+insert into Customers (Name, Email, CityId) values ('Asrani', 'asrani@bollywood.com', @Mumbai)
 
 -- Accounts
 declare @AshokKumarId int

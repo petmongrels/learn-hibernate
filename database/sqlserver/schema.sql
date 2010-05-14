@@ -1,12 +1,22 @@
-use LearnHibernate;
+use $(DatabaseName);
 
-create table Customers
+create table Cities
 (
 	Id int identity(1,1) not null,
 	Name nvarchar(50) not null,
-	Email nvarchar(100) not null,
-	Version int not null default 1,
-	primary key (Id) 
+	primary key (Id)
+)
+GO
+
+create table Customers
+(
+    Id int identity(1,1) not null,
+    Name nvarchar(50) not null,
+    Email nvarchar(100) not null,
+    Version int not null default 1,
+    CityId int not null,
+    primary key (Id),
+    constraint FK_CustomersCity foreign key(CityId) references Cities(Id)
 )
 GO
 
@@ -17,7 +27,7 @@ create table Accounts
 	CustomerId int not null,
 	Balance numeric(10,2) not null
 	primary key (Id),
-	constraint FK_Accounts_Customers foreign key(CustomerId) REFERENCES Customers(Id)
+	constraint FK_AccountsCustomer foreign key(CustomerId) references Customers(Id)
 )
 GO
 
@@ -29,6 +39,6 @@ create table Transactions
 	AccountId int not null,
 	Description nvarchar(100) null,
 	primary key (Id),
-	constraint FK_Transactions_Accounts foreign key(AccountId) references Accounts(Id)
+	constraint FK_TransactionsAccount foreign key(AccountId) references Accounts(Id)
 )
 GO

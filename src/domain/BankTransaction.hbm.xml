@@ -6,5 +6,6 @@
             <generator class="native"/>
         </id>
         <property name="amount" access="field"/>
+        <many-to-one name="account" cascade="none" access="field" column="AccountId"/>
     </class>
 </hibernate-mapping>

@@ -6,7 +6,7 @@
             <generator class="native"/>
         </id>
         <property name="balance" access="field"/>
-        <bag name="transactions" access="field" cascade="all-delete-orphan" lazy="true" batch-size="2" inverse="true">
+        <bag name="transactions" access="field" cascade="all-delete-orphan" lazy="true">
             <key column="AccountId"/>
             <one-to-many class="BankTransaction"/>
         </bag>        

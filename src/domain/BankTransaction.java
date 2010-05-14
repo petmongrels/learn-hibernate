@@ -3,7 +3,7 @@ package domain;
 import java.math.BigDecimal;
 
 public class BankTransaction {
-    private final int id = 0;
+    private int id;
     private Account account;
     private BigDecimal amount;
     private TransactionType transactionType;
@@ -17,6 +17,11 @@ public class BankTransaction {
         this.transactionType = transactionType;
     }
 
+    public BankTransaction(BankTransaction source) {
+        this(source.account, source.amount, source.transactionType);
+        id = source.id;
+    }
+
     public Account getAccount() {
         return account;
     }
@@ -27,5 +32,9 @@ public class BankTransaction {
 
     public TransactionType getTransactionType() {
         return transactionType;
+    }
+
+    public BankTransaction copy() {
+        return new BankTransaction(this);
     }
 }

@@ -12,13 +12,13 @@ public class SqlServerConnection {
     private Connection connection;
     private AppConfiguration configuration;
 
-    public SqlServerConnection(AppConfiguration configuration) throws Exception {
-        this(configuration, Connection.TRANSACTION_READ_COMMITTED);
+    public SqlServerConnection(AppConfiguration configuration, String database) throws Exception {
+        this(configuration, Connection.TRANSACTION_READ_COMMITTED, database);
     }
 
-    public SqlServerConnection(AppConfiguration configuration, int isolationLevel) throws Exception {
+    public SqlServerConnection(AppConfiguration configuration, int isolationLevel, String database) throws Exception {
         this.configuration = configuration;
-        String connectionUrl = "jdbc:jtds:sqlserver://" + configuration.sqlServer() + ":1433/LearnHibernate;SelectMethod=cursor";
+        String connectionUrl = "jdbc:jtds:sqlserver://" + configuration.sqlServer() + ":1433/" + database + ";SelectMethod=cursor";
         Class.forName(Driver.class.getName());
         connection = DriverManager.getConnection(connectionUrl, configuration.sqlServerUser(), configuration.sqlServerPassword());
         connection.setTransactionIsolation(isolationLevel);

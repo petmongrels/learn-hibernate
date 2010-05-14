@@ -1,6 +1,7 @@
 package transaction;
 
 import configuration.AppConfigurationImpl;
+import database.Databases;
 import database.sqlserver.SqlServerConnection;
 import domain.Account;
 import domain.BankTransaction;
@@ -21,7 +22,7 @@ public class AtomicityConcept {
 
     @BeforeTest
     public void setUp() throws Exception {
-        connection = new SqlServerConnection(new AppConfigurationImpl());
+        connection = new SqlServerConnection(new AppConfigurationImpl(), Databases.Main);
         customerRepository = new CustomerRepository(connection);
         account = customerRepository.getAccount("SB12345678");
         balance = account.getBalance();

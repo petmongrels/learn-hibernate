@@ -7,13 +7,17 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 
-public class ConceptBase {
+public class HibernateConceptBase {
     protected SessionFactory sessionFactory;
     protected Session session;
 
     @BeforeTest
     public void testFixtureSetup() {
-        sessionFactory = HibernateSessionFactory.getSessionFactory();
+        sessionFactory = sessionFactoryWrapper().getSessionFactory();
+    }
+
+    protected ISessionFactoryWrapper sessionFactoryWrapper() {
+        throw new RuntimeException("Cannot make it abstract, because TestNG doesn't work with it.");
     }
 
     @AfterTest
@@ -29,7 +33,7 @@ public class ConceptBase {
 
     @AfterMethod
     public void tearDown() {
-        session.getTransaction().commit();
+        session.getTransaction().rollback();
         session.close();
     }
 }

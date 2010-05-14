@@ -11,7 +11,7 @@ public class SessionFactoryConcepts {
 
     @BeforeTest
     public void testFixtureSetup() {
-        sessionFactory = HibernateSessionFactory.getSessionFactory();
+        sessionFactory = new SessionFactoryWrapper().getSessionFactory();
     }
 
     @AfterTest
@@ -22,14 +22,30 @@ public class SessionFactoryConcepts {
     @Test
     public void alwaysUseSameSessionFactoryAsItIsExpensive() {
         assert sessionFactory != null;
-        SessionFactory sessionFactoryAgain = HibernateSessionFactory.getSessionFactory();
+        SessionFactory sessionFactoryAgain = new SessionFactoryWrapper().getSessionFactory();
         assert sessionFactory == sessionFactoryAgain;
     }
 
     @Test
     public void useGetCurrentSession() {
         Session session = sessionFactory.getCurrentSession();
-        assert session != null;
-        assert session == sessionFactory.getCurrentSession();
+        try {
+            assert session != null;
+            assert session == sessionFactory.getCurrentSession();
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void openSession() {
+        Session session = sessionFactory.openSession();
+        Session otherSession = sessionFactory.openSession();
+        try {
+            assert !session.equals(otherSession);
+        } finally {
+            session.close();
+            otherSession.close();
+        }
     }
 }

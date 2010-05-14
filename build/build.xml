@@ -2,26 +2,32 @@
     <loadproperties srcFile="build.properties"/>
 
     <target name="sql.db" depends="sql.no.db">
-        <sql-exec file="database.sql"/>
+        <sql-exec file="database.sql" database="LearnHibernate"/>
+        <sql-exec file="database.sql" database="LearnHibernateAlt"/>
+        <sql-exec file="read-commited-snapshot.sql" database="LearnHibernate"/>
     </target>
 
     <target name="sql.no.db">
-        <sql-exec file="drop-database.sql"/>
+        <sql-exec file="drop-database.sql" database="LearnHibernate"/>
+        <sql-exec file="drop-database.sql" database="LearnHibernateAlt"/>
     </target>
 
     <target name="sql.schema" depends="sql.db">
-        <sql-exec file="schema.sql"/>
+        <sql-exec file="schema.sql" database="LearnHibernate"/>
+        <sql-exec file="schema.sql" database="LearnHibernateAlt"/>
     </target>
 
     <target name="sql.test.data" depends="sql.schema">
-        <sql-exec file="test-data.sql"/>
+        <sql-exec file="test-data.sql" database="LearnHibernate"/>
+        <sql-exec file="test-data.sql" database="LearnHibernateAlt"/>
     </target>
 
     <macrodef name="sql-exec">
         <attribute name="file"/>
+        <attribute name="database"/>
         <sequential>
             <exec executable="sqlcmd" dir="../database/sqlserver">
-                <arg line="-S ${sql.server} -b -E -i @{file} -v DatabaseName=LearnHibernate"/>
+                <arg line="-S ${sql.server} -b -E -i @{file} -v DatabaseName=@{database}"/>
             </exec>
         </sequential>
     </macrodef>

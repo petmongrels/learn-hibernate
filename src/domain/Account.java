@@ -1,6 +1,7 @@
 package domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Account {
@@ -16,6 +17,10 @@ public class Account {
         this.id = id;
         this.balance = balance;
         this.accountNumber = accountNumber;
+    }
+
+    public Account(Account account) {
+        this(account.id, account.balance, account.accountNumber);
     }
 
     public BankTransaction withdraw(BigDecimal amount) {
@@ -37,5 +42,14 @@ public class Account {
             transactedAmount = transactedAmount.add(transaction.getAmount());
         }
         return transactedAmount;
+    }
+
+    public Account copy() {
+        Account copy = new Account(this);
+        copy.transactions = new ArrayList<BankTransaction>();
+        for(BankTransaction bankTransaction : transactions) {
+            copy.transactions.add(bankTransaction.copy());
+        }
+        return copy;
     }
 }

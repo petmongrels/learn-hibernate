@@ -1,4 +1,7 @@
 package hibernate;
 
-public class MappingConcept extends ConceptBase {    
+public class MappingConcept extends HibernateConceptBase {
+    protected ISessionFactoryWrapper sessionFactoryWrapper() {
+        return new SessionFactoryWrapper();
+    }
 }

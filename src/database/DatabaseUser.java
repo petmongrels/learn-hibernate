@@ -11,8 +11,8 @@ public class DatabaseUser {
     private final SqlServerConnection connection;
     private final CustomerRepository customerRepository;
 
-    public DatabaseUser(int isolationLevel) throws Exception {
-        connection = new SqlServerConnection(new AppConfigurationImpl(), isolationLevel);
+    public DatabaseUser(int isolationLevel, String database) throws Exception {
+        connection = new SqlServerConnection(new AppConfigurationImpl(), isolationLevel, database);
         customerRepository = new CustomerRepository(connection);
         connection.beginTransaction();
     }

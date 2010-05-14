@@ -3,60 +3,30 @@ package transaction;
 import data.Customers;
 import database.BlockedException;
 import database.DatabaseUser;
+import database.Databases;
 import domain.Customer;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Calendar;
 
-public class IsolationConcept {
-    private DatabaseUser you;
-    private DatabaseUser i;
-
-    @BeforeMethod
-    public void setUp() throws Exception {
-        you = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
-    }
-
-    @AfterMethod
-    public void tearDown() throws Exception {
-        try {
-            you.rollback();
-            you.closeConnection();
-            i.rollback();
-            i.closeConnection();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+public class IsolationConcept extends IsolationConceptBase {
+    protected String databaseName() {
+        return Databases.Main;
     }
 
     @Test
     public void readUncommited() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_READ_UNCOMMITTED);
+        i = new DatabaseUser(Connection.TRANSACTION_READ_UNCOMMITTED, Databases.Main);
         final String newEmail = newEmail();
         you.updateCustomerEmail(Customers.AshokKumar, newEmail);
         Customer customer = i.getCustomer("Ashok Kumar");
         assert customer.getEmail().equals(newEmail);
     }
 
-//    @Test
-    public void readCommited_WhenSnapshotModeIsOff() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
-        final String newEmail = newEmail();
-        you.updateCustomerEmail(Customers.AshokKumar, newEmail);
-        try {
-            i.getCustomer(Customers.AshokKumar);
-            assert false;
-        } catch (BlockedException ignored) {
-        }
-    }
-
     @Test
     public void readCommited() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
+        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);
         final String newEmail = newEmail();
         you.updateCustomerEmail(Customers.AshokKumar, newEmail);
         Customer customer = i.getCustomer(Customers.AshokKumar);
@@ -67,7 +37,7 @@ public class IsolationConcept {
 
     @Test
     public void uploadOnSameRowBlocksNotEfficient() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
+        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);
         you.updateCustomerEmail(Customers.AshokKumar, newEmail());
         try {
             i.updateCustomerEmail(Customers.AshokKumar, newEmail());
@@ -78,7 +48,7 @@ public class IsolationConcept {
 
     @Test
     public void nonRepeatableRead() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
+        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);
         Customer customer = i.getCustomer(Customers.AshokKumar);
         you.updateCustomerEmail(Customers.AshokKumar, newEmail());
         you.commit();
@@ -87,7 +57,7 @@ public class IsolationConcept {
 
     @Test
     public void repeatableRead() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
+        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ, Databases.Main);
         Customer customer = i.getCustomer(Customers.AshokKumar);
         try {
             you.updateCustomerEmail(Customers.AshokKumar, newEmail());
@@ -99,7 +69,7 @@ public class IsolationConcept {
 
     @Test
     public void lockEscalation() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
+        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ, Databases.Main);
         i.getCustomersHavingInEmail("bollywood");
         try {
             you.updateCustomerEmail(Customers.AshokKumar, newEmail());
@@ -110,14 +80,14 @@ public class IsolationConcept {
 
     @Test
     public void noLockEscalation() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
+        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ, Databases.Main);
         i.getCustomersHavingInEmail("thoughtworks");
         you.updateCustomerEmail("Dharmendra", newEmail());
     }
 
     @Test
-    public void repeatableReadBlockedByOthersInserts_Inefficient() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
+    public void repeatableReadBlockedByOthersInsertsInefficient() throws Exception {
+        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ, Databases.Main);
         i.getCustomersHavingInName("Ashok");
         you.createCustomer("Ashok Mitra", "amitra@yahoo.com");
         try {
@@ -129,7 +99,7 @@ public class IsolationConcept {
 
     @Test
     public void phantomRead() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
+        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ, Databases.Main);
         ArrayList<Customer> customersList = i.getCustomersHavingInName("Ashok");
         you.createCustomer("Ashok Mitra", "amitra@yahoo.com");
         you.commit();
@@ -139,7 +109,7 @@ public class IsolationConcept {
 
     @Test
     public void noPhantomRead() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_SERIALIZABLE);
+        i = new DatabaseUser(Connection.TRANSACTION_SERIALIZABLE, Databases.Main);
         ArrayList<Customer> customersList = i.getCustomersHavingInName("Ashok");
         try {
             you.createCustomer("Ashok Mitra", "amitra@yahoo.com");
@@ -148,9 +118,5 @@ public class IsolationConcept {
             ArrayList<Customer> newCustomersList = i.getCustomersHavingInName("Ashok");
             assert customersList.size() == newCustomersList.size();
         }
-    }
-
-    private String newEmail() {
-        return String.format("akumar%d@bollywood.com", Calendar.getInstance().getTimeInMillis());
     }
 }

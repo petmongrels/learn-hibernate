@@ -1,12 +1,12 @@
 USE [master]
 GO
 
-IF db_id('LearnHibernate') IS NOT NULL
+IF db_id('$(DatabaseName)') IS NOT NULL
 	BEGIN
-		Exec('USE LearnHibernate')
-		ALTER DATABASE [LearnHibernate] SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+		Exec('USE $(DatabaseName)')
+		ALTER DATABASE [$(DatabaseName)] SET SINGLE_USER WITH ROLLBACK IMMEDIATE
 
 		USE [master]
-		DROP DATABASE [LearnHibernate]
+		DROP DATABASE [$(DatabaseName)]
 	END
 GO

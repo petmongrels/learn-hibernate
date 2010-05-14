@@ -2,6 +2,7 @@ package transaction;
 
 import data.Customers;
 import database.DatabaseUser;
+import database.Databases;
 import domain.Customer;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -15,8 +16,8 @@ public class OptimisticLockConcept {
 
     @BeforeTest
     public void setUp() throws Exception {
-        you = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
-        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
+        you = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);
+        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);
     }
 
     @AfterTest

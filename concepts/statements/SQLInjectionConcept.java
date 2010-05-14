@@ -1,6 +1,7 @@
 package statements;
 
 import configuration.AppConfigurationImpl;
+import database.Databases;
 import database.sqlserver.SqlServerConnection;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -13,7 +14,7 @@ public class SQLInjectionConcept {
 
     @BeforeMethod
     public void setUp() throws Exception {
-        connection = new SqlServerConnection(new AppConfigurationImpl());
+        connection = new SqlServerConnection(new AppConfigurationImpl(), Databases.Main);
         connection.beginTransaction();
     }
 

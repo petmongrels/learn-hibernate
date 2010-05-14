@@ -46,6 +46,6 @@ public class CustomerRepository {
     }
 
     public void createCustomer(String name, String email) throws Exception {
-        connection.execute("insert into Customers (Name, Email) values (?, ?)", name, email);
+        connection.execute("insert into Customers (Name, Email, CityId) values (?, ?, ?)", name, email, 1);
     }
 }
