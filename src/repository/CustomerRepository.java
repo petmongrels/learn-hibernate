@@ -16,7 +16,7 @@ public class CustomerRepository {
 
     public Account getAccount(String accountNumber) throws Exception {
         Object[] accountDetails = connection.queryValues("select Id, Balance from Accounts where Number = ?", accountNumber);
-        return new Account((Integer) accountDetails[0], (BigDecimal) accountDetails[1], accountNumber);
+        return new Account(null, (Integer) accountDetails[0], (BigDecimal) accountDetails[1], accountNumber);
     }
 
     public Customer getCustomer(String name) throws Exception {

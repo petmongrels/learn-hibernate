@@ -45,7 +45,7 @@ public class SqlServerConnection {
     }
 
     private ArrayList getRow(ResultSet resultSet) {
-        ArrayList list = new ArrayList(1);
+        ArrayList<Object> list = new ArrayList<Object>(1);
         int resultIndex = 1;
         while (true) {
             try {

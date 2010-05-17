@@ -42,3 +42,14 @@ create table Transactions
 	constraint FK_TransactionsAccount foreign key(AccountId) references Accounts(Id)
 )
 GO
+
+create table Addresses
+(
+    Id int identity(1,1) not null,
+    Line1 nvarchar(100) not null,
+    Line2 nvarchar(100) null,
+    CustomerId int not null,
+    primary key(Id),
+    constraint FK_CustomersAddresses foreign key(CustomerId) references Customers(Id)
+)
+GO

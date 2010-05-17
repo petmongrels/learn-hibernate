@@ -43,4 +43,8 @@ select @AshokKumarCurrentAccountId = Id From Accounts where Number = @AshokKumar
 insert into Transactions (Amount, Type, AccountId, Description) values (100.00, 'Debit', @AshokKumarCurrentAccountId, 'Pocket Money')
 insert into Transactions (Amount, Type, AccountId, Description) values (200.00, 'Debit', @AshokKumarCurrentAccountId, 'Credit Card')
 insert into Transactions (Amount, Type, AccountId, Description) values (300.00, 'Debit', @AshokKumarCurrentAccountId, 'ATM')
+
+-- Addresses
+insert into Addresses (Line1, Line2, CustomerId) values ("Diamond District", "Airport Road", 1);
+insert into Addresses (Line1, Line2, CustomerId) values ("Habitat", "Brigade Road", 1);
 GO

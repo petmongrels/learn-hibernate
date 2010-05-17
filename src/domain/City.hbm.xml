@@ -1,10 +1,10 @@
 <?xml version="1.0"?><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="domain">
+<hibernate-mapping package="domain" default-access="field">
     <class name="City" table="Cities" lazy="true" batch-size="2">
-        <id name="id" column="Id" access="field">
+        <id name="id" column="Id">
             <generator class="native"/>
         </id>
-        <property name="name" access="field"/>
+        <property name="name"/>
     </class>
 </hibernate-mapping>

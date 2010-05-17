@@ -1,9 +1,6 @@
 package hibernate;
 
-import domain.Account;
-import domain.BankTransaction;
-import domain.City;
-import domain.Customer;
+import domain.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -18,6 +15,7 @@ public class SessionFactoryWrapper implements ISessionFactoryWrapper {
             configuration.addClass(Account.class);
             configuration.addClass(BankTransaction.class);
             configuration.addClass(City.class);
+            configuration.addClass(Address.class);
             return configuration.buildSessionFactory();
         }
         catch (Throwable ex) {

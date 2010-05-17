@@ -40,8 +40,8 @@ public class AtomicityConcept {
 
             connection.execute("update Accounts set Balance = ? where Id = ?", account.getBalance(), account.getId());
             connection.execute("insert into Transactions (Amount, Type, AccountId) values (?, ?, ?)",
-                                bankTransaction.getAmount(), bankTransaction.getTransactionType().toString(), bankTransaction.getAccount().getId());
-            Assert.fail("BankTransaction insert should have failed");
+                                bankTransaction.getAmount(), bankTransaction.getType(), bankTransaction.getAccount().getId());
+            assert false;
         } catch (SQLException e) {
             Account account = customerRepository.getAccount("SB12345678");
             assert !account.getBalance().equals(balance);
@@ -56,7 +56,7 @@ public class AtomicityConcept {
 
             connection.execute("update Accounts set Balance = ? where Id = ?", account.getBalance(), account.getId());
             connection.execute("insert into Transactions (Amount, Type, AccountId) values (?, ?, ?)",
-                                bankTransaction.getAmount(), bankTransaction.getTransactionType().toString(), bankTransaction.getAccount().getId());
+                                bankTransaction.getAmount(), bankTransaction.getType().toString(), bankTransaction.getAccount().getId());
             Assert.fail("BankTransaction insert should have failed");
         } catch (SQLException e) {
             connection.rollback();

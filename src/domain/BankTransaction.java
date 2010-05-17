@@ -6,19 +6,19 @@ public class BankTransaction {
     private int id;
     private Account account;
     private BigDecimal amount;
-    private TransactionType transactionType;
+    private String type;
 
     private BankTransaction() {
     }
 
-    public BankTransaction(Account account, BigDecimal amount, TransactionType transactionType) {
+    public BankTransaction(Account account, BigDecimal amount, String type) {
         this.account = account;
         this.amount = amount;
-        this.transactionType = transactionType;
+        this.type = type;
     }
 
     public BankTransaction(BankTransaction source) {
-        this(source.account, source.amount, source.transactionType);
+        this(source.account, source.amount, source.type);
         id = source.id;
     }
 
@@ -30,8 +30,8 @@ public class BankTransaction {
         return amount;
     }
 
-    public TransactionType getTransactionType() {
-        return transactionType;
+    public String getType() {
+        return type;
     }
 
     public BankTransaction copy() {

@@ -1,5 +1,6 @@
 package domain;
 
-public enum TransactionType {
-    Debit, Credit
+public class TransactionType {
+    public static final String Debit = "Debit";
+    public static final String Credit = "Credit";
 }

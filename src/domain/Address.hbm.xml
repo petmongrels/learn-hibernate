@@ -1,12 +1,12 @@
 <?xml version="1.0"?><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="domain" default-access="field">
-    <class name="BankTransaction" table="Transactions" lazy="true">
+    <class name="Address" table="Addresses" lazy="true">
         <id name="id" column="Id">
             <generator class="native"/>
         </id>
-        <property name="amount"/>
-        <property name="type"/>
-        <many-to-one name="account" cascade="none" column="AccountId"/>
+        <property name="line1"/>
+        <property name="line2"/>
+        <many-to-one name="customer" cascade="none" column="CustomerId"/>
     </class>
 </hibernate-mapping>

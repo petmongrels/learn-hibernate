@@ -1,14 +1,16 @@
 <?xml version="1.0"?><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="domain">
+<hibernate-mapping package="domain" default-access="field">
     <class name="Account" table="Accounts" lazy="true">
-        <id name="id" column="Id" access="field">
+        <id name="id" column="Id">
             <generator class="native"/>
         </id>
-        <property name="balance" access="field"/>
-        <bag name="transactions" access="field" cascade="all-delete-orphan" lazy="true" batch-size="2" inverse="true">
+        <property name="balance"/>
+        <property name="number"/>
+        <bag name="transactions" cascade="all-delete-orphan" lazy="true" batch-size="2" inverse="true">
             <key column="AccountId"/>
             <one-to-many class="BankTransaction"/>
-        </bag>        
+        </bag>
+        <many-to-one name="customer" column="CustomerId" cascade="none"/>
     </class>
 </hibernate-mapping>

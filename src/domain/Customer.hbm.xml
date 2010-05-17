@@ -1,17 +1,21 @@
 <?xml version="1.0"?><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="domain">
+<hibernate-mapping package="domain" default-access="field">
     <class name="Customer" table="Customers">
-        <id name="id" column="Id" access="field">
+        <id name="id" column="Id">
             <generator class="native"/>
         </id>
-        <version name="version" access="field"/>
-        <property name="email" access="field"/>
-        <property name="name" access="field"/>
-        <bag name="accounts" access="field" cascade="all-delete-orphan" lazy="true">
+        <version name="version"/>
+        <property name="email"/>
+        <property name="name"/>
+        <bag name="accounts" cascade="all-delete-orphan" lazy="true">
             <key column="CustomerId"/>
             <one-to-many class="Account"/>
         </bag>
-        <many-to-one name="city" access="field" cascade="all-delete-orphan" unique="true" lazy="no-proxy" column="CityId"/>
+        <bag name="addresses" cascade="all-delete-orphan" lazy="true">
+            <key column="CustomerId"/>
+            <one-to-many class="Address"/>
+        </bag>
+        <many-to-one name="city" cascade="all-delete-orphan" unique="true" lazy="no-proxy" column="CityId"/>
     </class>
 </hibernate-mapping>
