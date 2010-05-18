@@ -12,6 +12,10 @@
             <key column="CustomerId"/>
             <one-to-many class="Account"/>
         </bag>
+        <bag name="addresses" cascade="all-delete-orphan" lazy="true" access="field">
+            <key column="CustomerId"/>
+            <one-to-many class="Address"/>
+        </bag>        
         <many-to-one name="city" access="field" cascade="all-delete-orphan" unique="true" lazy="proxy" column="CityId"/>
     </class>
 </hibernate-mapping>

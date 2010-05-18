@@ -56,7 +56,7 @@ public class Account extends Entity {
         return transactedAmount;
     }
 
-    public Account copy(Customer customer) {
+    public Account copy() {
         Account copy = new Account(customer, this);
         copy.transactions = new ArrayList<BankTransaction>();
         for(BankTransaction bankTransaction : transactions) {

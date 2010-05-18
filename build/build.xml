@@ -1,6 +1,5 @@
 <project name="learn-hibernate" default="sql.test.data">
     <loadproperties srcFile="build.properties"/>
-
     <target name="sql.db" depends="sql.no.db">
         <sql-exec file="database.sql" database="LearnHibernate"/>
         <sql-exec file="database.sql" database="LearnHibernateAlt"/>
@@ -8,8 +7,8 @@
     </target>
 
     <target name="sql.no.db">
-        <sql-exec file="drop-database.sql" database="LearnHibernate"/>
-        <sql-exec file="drop-database.sql" database="LearnHibernateAlt"/>
+        <sql-exec file="no-database.sql" database="LearnHibernate"/>
+        <sql-exec file="no-database.sql" database="LearnHibernateAlt"/>
     </target>
 
     <target name="sql.schema" depends="sql.db">
@@ -21,6 +20,32 @@
         <sql-exec file="test-data.sql" database="LearnHibernate"/>
         <sql-exec file="test-data.sql" database="LearnHibernateAlt"/>
     </target>
+
+    <target name="oracle.db" depends="oracle.no.db">
+        <ora-exec file="@database.sql" user="system"/>
+    </target>
+
+    <target name="oracle.no.db">
+        <ora-exec file="@no-database.sql" user="system"/>
+    </target>
+
+    <target name="oracle.schema" depends="oracle.db">
+        <ora-exec file="@schema.sql" user="LearnHibernate"/>
+    </target>
+
+    <target name="oracle.test.data" depends="oracle.schema">
+        <ora-exec file="@test-data.sql" user="LearnHibernate"/>
+    </target>
+
+    <macrodef name="ora-exec">
+        <attribute name="file"/>
+        <attribute name="user"/>
+        <sequential>
+            <exec executable="sqlplus" dir="../database/oracle" failonerror="true">
+                <arg line="-S @{user}/${oracle.password}@${tnsname} @{file} ${oracle.password} ${tnsname}"/>
+            </exec>
+        </sequential>
+    </macrodef>
 
     <macrodef name="sql-exec">
         <attribute name="file"/>

@@ -1,10 +1,11 @@
 <?xml version="1.0"?><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="domain" default-access="field">
-    <class name="Customer" table="Customers">
+    <class name="Customer" table="Customers" discriminator-value="0">
         <id name="id" column="Id">
             <generator class="native"/>
         </id>
+        <discriminator column="IsCommercial"/>
         <version name="version"/>
         <property name="email"/>
         <property name="name"/>
@@ -17,5 +18,7 @@
             <one-to-many class="Address"/>
         </bag>
         <many-to-one name="city" cascade="all-delete-orphan" unique="true" lazy="no-proxy" column="CityId"/>
+
+        <subclass name="CommercialCustomer" discriminator-value="1"/>
     </class>
 </hibernate-mapping>

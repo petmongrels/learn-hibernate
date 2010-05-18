@@ -32,4 +32,8 @@ public class AppConfigurationImpl implements AppConfiguration {
     public String sqlServer() {
         return properties.getProperty("sqlserver");
     }
+
+    public String oraclePassword() {
+        return properties.getProperty("oracle.password");
+    }
 }

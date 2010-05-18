@@ -15,6 +15,7 @@ create table Customers
     Email nvarchar(100) not null,
     Version int not null default 1,
     CityId int not null,
+    IsCommercial bit not null default 0,
     primary key (Id),
     constraint FK_CustomersCity foreign key(CityId) references Cities(Id)
 )

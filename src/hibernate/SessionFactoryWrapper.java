@@ -1,5 +1,6 @@
 package hibernate;
 
+import configuration.SqlServerSettings;
 import domain.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -9,7 +10,7 @@ public class SessionFactoryWrapper implements ISessionFactoryWrapper {
 
     private static SessionFactory buildSessionFactory() {
         try {
-            Configuration configuration = HibernateConfigurationFactory.createBasicConfiguration();
+            Configuration configuration = HibernateConfigurationFactory.createBasicConfiguration(new SqlServerSettings());
 
             configuration.addClass(Customer.class);
             configuration.addClass(Account.class);

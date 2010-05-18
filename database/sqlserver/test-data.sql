@@ -2,10 +2,13 @@ use $(DatabaseName)
 -- Cities
 insert into Cities (Name) values ('Bangalore')
 insert into Cities (Name) values ('Mumbai')
+insert into Cities (Name) values ('Calcutta')
 declare @Bangalore int
 declare @Mumbai int
+declare @Calcutta int
 select @Bangalore = Id from Cities where Name = 'Bangalore'
 select @Mumbai = Id from Cities where Name = 'Mumbai'
+select @Calcutta = Id from Cities where Name = 'Calcutta'
 
 -- Customers
 declare @AshokKumarName nvarchar(50)
@@ -19,6 +22,8 @@ insert into Customers (Name, Email, CityId) values ('Amjad Khan', 'amjad@bollywo
 insert into Customers (Name, Email, CityId) values ('A. K. Hangal', 'akhangal@bollywood.com', @Mumbai)
 insert into Customers (Name, Email, CityId) values ('Leela Mishra', 'lmishra@bollywood.com', @Mumbai)
 insert into Customers (Name, Email, CityId) values ('Asrani', 'asrani@bollywood.com', @Mumbai)
+insert into Customers (Name, Email, CityId) values ('Jaya Bhaduri', 'jaya@bollywood.com', @Calcutta)
+insert into Customers (Name, Email, CityId, IsCommercial) values ('Sholay', 'sholay@bollywood.com', @Mumbai, 1)
 
 -- Accounts
 declare @AshokKumarId int

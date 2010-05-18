@@ -73,7 +73,7 @@ public class Customer extends Entity {
         Customer customer = new Customer(this);
         customer.accounts = new ArrayList<Account>();
         for(Account account : accounts) {
-            customer.accounts.add(account.copy(customer));
+            customer.accounts.add(account.copy());
         }
         customer.addresses = new ArrayList<Address>();
         for(Address address : addresses) {
