@@ -2,7 +2,7 @@ package hibernate;
 
 import configuration.AppConfigurationImpl;
 import configuration.DatabaseSettings;
-import org.hibernate.cache.NoCacheProvider;
+import org.hibernate.cache.HashtableCacheProvider;
 import org.hibernate.cfg.Configuration;
 
 public class HibernateConfigurationFactory {
@@ -16,7 +16,8 @@ public class HibernateConfigurationFactory {
         configuration.setProperty("hibernate.connection.password", databaseSettings.password(appConfiguration));
         configuration.setProperty("hibernate.connection.pool_size", "1");
         configuration.setProperty("hibernate.current_session_context_class", "thread");
-        configuration.setProperty("hibernate.cache.provider_class", NoCacheProvider.class.getName());
+        configuration.setProperty("hibernate.cache.use_second_level_cache", "true");
+        configuration.setProperty("hibernate.cache.provider_class", HashtableCacheProvider.class.getName());
         configuration.setProperty("hibernate.show_sql", "true");
         return configuration;
     }

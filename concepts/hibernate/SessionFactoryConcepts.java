@@ -29,8 +29,8 @@ public class SessionFactoryConcepts {
     @Test
     public void useGetCurrentSession() {
         Session session = sessionFactory.getCurrentSession();
+        assert session != null;
         try {
-            assert session != null;
             assert session == sessionFactory.getCurrentSession();
         } finally {
             session.close();

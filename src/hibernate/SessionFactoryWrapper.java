@@ -11,7 +11,6 @@ public class SessionFactoryWrapper implements ISessionFactoryWrapper {
     private static SessionFactory buildSessionFactory() {
         try {
             Configuration configuration = HibernateConfigurationFactory.createBasicConfiguration(new SqlServerSettings());
-
             configuration.addClass(Customer.class);
             configuration.addClass(Account.class);
             configuration.addClass(BankTransaction.class);

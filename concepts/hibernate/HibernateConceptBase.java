@@ -27,6 +27,15 @@ public class HibernateConceptBase {
 
     @BeforeMethod
     public void setUp() {
+        openSession();
+    }
+
+    protected void reopenSession() {
+        session.close();
+        openSession();
+    }
+
+    protected void openSession() {
         session = sessionFactory.openSession();
         session.beginTransaction();
     }
