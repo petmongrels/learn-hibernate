@@ -2,6 +2,7 @@ package hibernate;
 
 import domain.Account;
 import domain.Address;
+import domain.BankTransaction;
 import domain.Customer;
 import dto.AddressDTO;
 import org.hibernate.HibernateException;
@@ -26,6 +27,7 @@ public class SaveConcepts extends HibernateConceptBase {
         Customer customer = (Customer) session.load(Customer.class, 1);
         changedCustomer = customer.copy();
         session.clear();
+        sessionFactory.getStatistics().clear();
         System.out.println("SetUp Complete");
     }
 
@@ -35,6 +37,10 @@ public class SaveConcepts extends HibernateConceptBase {
         account.withdraw(new BigDecimal(100));
         session.saveOrUpdate(account);
         session.flush();
+
+        assert 1 == updateCount(Account.class);
+        assert account.transactionCount() - 1 == updateCount(BankTransaction.class);
+        assert 1 == insertCount(BankTransaction.class);
     }
 
     @Test
@@ -42,6 +48,11 @@ public class SaveConcepts extends HibernateConceptBase {
         Account account = changedCustomer.getAccounts().get(0);
         session.merge(account);
         session.flush();
+
+        assert 0 == updateCount(Account.class);
+        assert 0 == updateCount(BankTransaction.class);
+        assert 0 == insertCount(BankTransaction.class);
+        assert 4 == loadCount();
     }
 
     @Test

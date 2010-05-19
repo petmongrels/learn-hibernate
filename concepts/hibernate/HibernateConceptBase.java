@@ -14,6 +14,7 @@ public class HibernateConceptBase {
     @BeforeTest
     public void testFixtureSetup() {
         sessionFactory = sessionFactoryWrapper().getSessionFactory();
+        sessionFactory.getStatistics().setStatisticsEnabled(true);
     }
 
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
@@ -33,6 +34,16 @@ public class HibernateConceptBase {
     protected void reopenSession() {
         session.close();
         openSession();
+        clearStatistics();
+    }
+
+    protected void clearStatistics() {
+        sessionFactory.getStatistics().clear();
+    }
+
+    protected void clearSession() {
+        session.clear();
+        clearStatistics();
     }
 
     protected void openSession() {
@@ -44,5 +55,21 @@ public class HibernateConceptBase {
     public void tearDown() {
         session.getTransaction().rollback();
         session.close();
+    }
+
+    protected long updateCount(Class aClass) {
+        return sessionFactory.getStatistics().getEntityStatistics(aClass.getName()).getUpdateCount();
+    }
+
+    protected long insertCount(Class aClass) {
+        return sessionFactory.getStatistics().getEntityStatistics(aClass.getName()).getInsertCount();
+    }
+
+    protected long loadCount() {
+        return sessionFactory.getStatistics().getEntityLoadCount();
+    }
+
+    protected long loadCount(Class aClass) {
+        return sessionFactory.getStatistics().getEntityStatistics(aClass.getName()).getLoadCount();
     }
 }

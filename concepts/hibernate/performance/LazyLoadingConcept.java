@@ -73,6 +73,12 @@ public class LazyLoadingConcept extends HibernateConceptBase {
     }
 
     @Test
+    public void nPlusOneQuery() {
+        Customer customer = (Customer) session.load(Customer.class, 1);
+        customer.totalTransactedAmount();
+    }
+
+    @Test
     public void loadSubClassDoesntReturnSubclassWhenRequestedThroughBaseClass() {
         final Criteria criteria = session.createCriteria(Customer.class).add(Restrictions.eq("name", "Sholay"));
         Customer customer = (Customer) criteria.uniqueResult();

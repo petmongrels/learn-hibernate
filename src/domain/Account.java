@@ -64,4 +64,8 @@ public class Account extends Entity {
         }
         return copy;
     }
+
+    public int transactionCount() {
+        return transactions.size();
+    }
 }

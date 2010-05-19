@@ -5,6 +5,7 @@ import domain.Customer;
 import hibernate.HibernateConceptBase;
 import hibernate.ISessionFactoryWrapper;
 import hibernate.SessionFactoryWrapper;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class SecondLevelCacheConcept extends HibernateConceptBase {
@@ -12,22 +13,37 @@ public class SecondLevelCacheConcept extends HibernateConceptBase {
         return new SessionFactoryWrapper();
     }
 
-    @Test
-    public void loadsFromCache() {
+    @BeforeMethod
+    public void setUp() {
+        super.setUp();
+        sessionFactory.getCache().evictEntity(Address.class.getName(), 1);
+    }
+
+    private void loadAddress() {
         Address address = (Address) session.load(Address.class, 1);
         address.getLine1();
+    }
+
+    private long addressLoadCount() {
+        return loadCount(Address.class);
+    }
+
+    @Test
+    public void loadsFromCache() {
+        loadAddress();
         reopenSession();
-        address = (Address) session.load(Address.class, 1);
-        address.getLine1();
+        loadAddress();
+
+        assert 0 == addressLoadCount();
     }
 
     @Test
     public void loadsFromCacheOnlyAfterSessionIsClosedOnce() {
-        Address address = (Address) session.load(Address.class, 1);
-        address.getLine1();
-        session.clear();
-        address = (Address) session.load(Address.class, 1);
-        address.getLine1();
+        loadAddress();
+        clearSession();
+        loadAddress();
+
+        assert 1 == addressLoadCount();
     }
 
     @Test
@@ -35,7 +51,9 @@ public class SecondLevelCacheConcept extends HibernateConceptBase {
         Customer customer = (Customer) session.load(Customer.class, 1);
         loadAddresses(customer);
         reopenSession();
-        session.load(Address.class, 1);
+        loadAddress();
+
+        assert 0 == addressLoadCount();
     }
 
     @Test
@@ -43,12 +61,10 @@ public class SecondLevelCacheConcept extends HibernateConceptBase {
         Customer customer = (Customer) session.load(Customer.class, 1);
         loadAddresses(customer);
         reopenSession();
-        System.out.println("Reopened Session");
-        session.load(Address.class, 1);
-        System.out.println("Address loaded");
+
         customer = (Customer) session.load(Customer.class, 1);
         loadAddresses(customer);
-        System.out.println("Doesn't hit cache");
+        assert 0 != addressLoadCount();
     }
 
     private void loadAddresses(Customer customer) {
