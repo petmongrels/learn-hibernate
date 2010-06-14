@@ -17,16 +17,18 @@ create table Customers
     CityId int not null,
     IsCommercial bit not null default 0,
     primary key (Id),
-    constraint FK_CustomersCity foreign key(CityId) references Cities(Id)
+    constraint FK_CustomersCity foreign key(CityId) references Cities(Id),
+    constraint UK_CustomersEmail unique(Email)
 )
 GO
 
 create table Accounts
 (
 	Id int identity(1,1) not null,
-	Number varchar(50) not null,
+	AccountNumber varchar(50) not null,
 	CustomerId int not null,
-	Balance numeric(10,2) not null
+	Balance numeric(10,2) not null,
+	Version int not null default 1,
 	primary key (Id),
 	constraint FK_AccountsCustomer foreign key(CustomerId) references Customers(Id)
 )

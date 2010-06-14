@@ -5,12 +5,18 @@ import database.BlockedException;
 import database.DatabaseUser;
 import database.Databases;
 import domain.Customer;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.sql.Connection;
 import java.util.ArrayList;
 
 public class IsolationConcept extends IsolationConceptBase {
+    @BeforeMethod
+    public void setUp() throws Exception {
+        you = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, databaseName());
+    }
+    
     protected String databaseName() {
         return Databases.Main;
     }
@@ -36,7 +42,7 @@ public class IsolationConcept extends IsolationConceptBase {
     }
 
     @Test
-    public void uploadOnSameRowBlocksNotEfficient() throws Exception {
+    public void uploadOnSameRowBlocks() throws Exception {
         i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);
         you.updateCustomerEmail(Customers.AshokKumar, newEmail());
         try {
@@ -89,7 +95,7 @@ public class IsolationConcept extends IsolationConceptBase {
     public void repeatableReadBlockedByOthersInsertsInefficient() throws Exception {
         i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ, Databases.Main);
         i.getCustomersHavingInName("Ashok");
-        you.createCustomer("Ashok Mitra", "amitra@yahoo.com");
+        you.createCustomer("Kishore Kumar", "kkumar@yahoo.com");
         try {
             i.getCustomersHavingInName("Ashok");
             assert false;
@@ -104,7 +110,7 @@ public class IsolationConcept extends IsolationConceptBase {
         you.createCustomer("Ashok Mitra", "amitra@yahoo.com");
         you.commit();
         ArrayList<Customer> newCustomersList = i.getCustomersHavingInName("Ashok");
-        assert customersList.size() != newCustomersList.size();
+        assert customersList.size() + 1 == newCustomersList.size();
     }
 
     @Test

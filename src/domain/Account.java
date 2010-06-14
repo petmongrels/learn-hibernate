@@ -15,8 +15,8 @@ public class Account extends Entity {
     protected Account() {
     }
 
-    public Account(Customer customer, int id, BigDecimal balance, String number) {
-        super(id);
+    public Account(Customer customer, int id, BigDecimal balance, String number, int version) {
+        super(id, version);
         this.customer = customer;
         this.balance = balance;
         this.number = number;
@@ -24,17 +24,17 @@ public class Account extends Entity {
     }
 
     public static Account NewAccount(Customer customer, BigDecimal balance, AccountNumberProvider accountNumberProvider){
-        Account account = new Account(customer, 0, balance, accountNumberProvider.newAccount());
+        Account account = new Account(customer, 0, balance, accountNumberProvider.newAccount(), 0);
         account.transactions.add(new BankTransaction(account, balance, TransactionType.Credit));
         return account;
     }
 
     public Account(Customer customer, BigDecimal balance, String number) {
-        this(customer, 0, balance, number);
+        this(customer, 0, balance, number, 0);
     }
 
     public Account(Customer customer, Account account) {
-        this(customer, account.getId(), account.balance, account.number);
+        this(customer, account.getId(), account.balance, account.number, 0);
     }
 
     public BankTransaction withdraw(BigDecimal amount) {
@@ -67,5 +67,9 @@ public class Account extends Entity {
 
     public int transactionCount() {
         return transactions.size();
+    }
+
+    public String getNumber() {
+        return number;
     }
 }

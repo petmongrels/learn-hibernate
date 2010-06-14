@@ -1,10 +1,12 @@
 package statements;
 
 import domain.City;
-import hibernate.AltSessionFactoryWrapper;
+import domain.Customer;
 import hibernate.HibernateConceptBase;
 import hibernate.ISessionFactoryWrapper;
+import hibernate.SessionFactoryWrapper;
 import org.hibernate.classic.Session;
+import org.hibernate.exception.ConstraintViolationException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -15,7 +17,7 @@ public class InvarianceProblem extends HibernateConceptBase {
     private Session otherSession;
 
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
-        return new AltSessionFactoryWrapper();
+        return new SessionFactoryWrapper();
     }
 
     @BeforeMethod
@@ -28,23 +30,38 @@ public class InvarianceProblem extends HibernateConceptBase {
     @AfterMethod
     public void tearDown() {
         super.tearDown();
+        otherSession.getTransaction().rollback();
         otherSession.close();
     }
 
     @Test
     public void dontCheckUniquenessInCodeBecauseOfRaceConditions() {
-        City newCity = new City("Chennai");
+        List list = session.createCriteria(City.class).list();
 
-        isCityAlreadyPresent(newCity, session);
-        isCityAlreadyPresent(newCity, otherSession);
+        assertCityAlreadyNotPresent(new City("Chennai"), session);
 
-        otherSession.save(newCity);
+        otherSession.save(new City("Chennai"));
         otherSession.flush();
-        session.save(newCity);
+        session.save(new City("Chennai"));
         session.flush();
+
+        assert list.size() + 1 == otherSession.createCriteria(City.class).list().size();
+        assert list.size() + 1 == session.createCriteria(City.class).list().size();
     }
 
-    private void isCityAlreadyPresent(City newCity, Session session) {
+    @Test
+    public void letDatabaseVerifyUniqueness() {
+        Customer customerOne = (Customer) session.load(Customer.class, 1);
+        Customer customerTwo = (Customer) session.load(Customer.class, 2);
+        try {
+            customerTwo.setEmail(customerOne.getEmail());
+            session.flush();
+            assert false;
+        } catch (ConstraintViolationException ignored) {
+        }
+    }
+
+    private void assertCityAlreadyNotPresent(City newCity, Session session) {
         List cities = session.createCriteria(City.class).list();
         if (cities.contains(newCity))
             assert false;

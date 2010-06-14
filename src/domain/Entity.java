@@ -40,5 +40,9 @@ public abstract class Entity {
 
     public void verifyVersion(int disconnectedCustomersVersion) {
         if (version != disconnectedCustomersVersion) throw new StaleObjectStateException(getClass().getName(), id);
-    }    
+    }
+
+    public int getVersion() {
+        return version;
+    }
 }

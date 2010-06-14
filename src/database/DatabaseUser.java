@@ -2,7 +2,9 @@ package database;
 
 import configuration.AppConfigurationImpl;
 import database.sqlserver.SqlServerConnection;
+import domain.Account;
 import domain.Customer;
+import repository.AccountRepository;
 import repository.CustomerRepository;
 
 import java.util.ArrayList;
@@ -10,10 +12,12 @@ import java.util.ArrayList;
 public class DatabaseUser {
     private final SqlServerConnection connection;
     private final CustomerRepository customerRepository;
+    private AccountRepository accountRepository;
 
     public DatabaseUser(int isolationLevel, String database) throws Exception {
         connection = new SqlServerConnection(new AppConfigurationImpl(), isolationLevel, database);
         customerRepository = new CustomerRepository(connection);
+        accountRepository = new AccountRepository(connection);
         connection.beginTransaction();
     }
 
@@ -53,7 +57,15 @@ public class DatabaseUser {
         customerRepository.createCustomer(name, email);
     }
 
-    public void noTransaction() throws Exception {
-        connection.noTransaction();
+    public Account getAccount(String number) throws Exception {
+        return accountRepository.getAccount(number);
+    }
+
+    public void updateAccountBalance(Account account) throws Exception {
+        accountRepository.updateBalanceWithLock(account);
+    }
+
+    public void updateAccountBalanceWithLock(Account account) throws Exception {
+        accountRepository.updateBalanceWithLock(account);
     }
 }
