@@ -1,7 +1,7 @@
 package database;
 
 import configuration.AppConfigurationImpl;
-import database.sqlserver.SqlServerConnection;
+import configuration.DatabaseSettings;
 import domain.Account;
 import domain.Customer;
 import repository.AccountRepository;
@@ -10,12 +10,13 @@ import repository.CustomerRepository;
 import java.util.ArrayList;
 
 public class DatabaseUser {
-    private final SqlServerConnection connection;
+    private final DatabaseConnection connection;
     private final CustomerRepository customerRepository;
     private AccountRepository accountRepository;
 
     public DatabaseUser(int isolationLevel, String database) throws Exception {
-        connection = new SqlServerConnection(new AppConfigurationImpl(), isolationLevel, database);
+        final DatabaseSettings databaseSettings = DatabaseSettingsFactory.create(new AppConfigurationImpl(), database);
+        connection = new DatabaseConnection(databaseSettings, isolationLevel);
         customerRepository = new CustomerRepository(connection);
         accountRepository = new AccountRepository(connection);
         connection.beginTransaction();

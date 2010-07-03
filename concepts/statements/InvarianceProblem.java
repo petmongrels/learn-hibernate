@@ -1,10 +1,12 @@
 package statements;
 
+import configuration.AppConfigurationImpl;
+import database.Databases;
 import domain.City;
 import domain.Customer;
 import hibernate.HibernateConceptBase;
 import hibernate.ISessionFactoryWrapper;
-import hibernate.SessionFactoryWrapper;
+import hibernate.SessionFactoryWrapperFactory;
 import org.hibernate.classic.Session;
 import org.hibernate.exception.ConstraintViolationException;
 import org.testng.annotations.AfterMethod;
@@ -17,7 +19,7 @@ public class InvarianceProblem extends HibernateConceptBase {
     private Session otherSession;
 
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
-        return new SessionFactoryWrapper();
+        return SessionFactoryWrapperFactory.create(new AppConfigurationImpl().activeDatabase(), Databases.Main);
     }
 
     @BeforeMethod

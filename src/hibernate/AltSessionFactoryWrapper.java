@@ -1,6 +1,7 @@
 package hibernate;
 
 import configuration.AltSqlServerSettings;
+import configuration.AppConfigurationImpl;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -9,7 +10,7 @@ public class AltSessionFactoryWrapper implements ISessionFactoryWrapper {
 
     private static SessionFactory buildSessionFactory() {
         try {
-            Configuration configuration = HibernateConfigurationFactory.createBasicConfiguration(new AltSqlServerSettings());
+            Configuration configuration = HibernateConfigurationFactory.createBasicConfiguration(new AltSqlServerSettings(new AppConfigurationImpl()));
 
             configuration.addFile(mappingFile("Customer2"));
             configuration.addFile(mappingFile("Account2"));

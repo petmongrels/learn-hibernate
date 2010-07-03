@@ -1,16 +1,17 @@
 package hibernate;
 
+import configuration.AppConfigurationImpl;
 import configuration.SqlServerSettings;
 import domain.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-public class SessionFactoryWrapper implements ISessionFactoryWrapper {
+public class SqlServerSessionFactoryWrapper implements ISessionFactoryWrapper {
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
     private static SessionFactory buildSessionFactory() {
         try {
-            Configuration configuration = HibernateConfigurationFactory.createBasicConfiguration(new SqlServerSettings());
+            Configuration configuration = HibernateConfigurationFactory.createBasicConfiguration(new SqlServerSettings(new AppConfigurationImpl()));
             configuration.addClass(Customer.class);
             configuration.addClass(Account.class);
             configuration.addClass(BankTransaction.class);

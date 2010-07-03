@@ -25,7 +25,7 @@ GO
 create table Accounts
 (
 	Id int identity(1,1) not null,
-	AccountNumber varchar(50) not null,
+	Number varchar(50) not null,
 	CustomerId int not null,
 	Balance numeric(10,2) not null,
 	Version int not null default 1,

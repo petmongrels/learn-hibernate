@@ -1,11 +1,13 @@
 package hibernate.performance;
 
+import configuration.AppConfigurationImpl;
+import database.Databases;
 import domain.City;
 import domain.CommercialCustomer;
 import domain.Customer;
 import hibernate.HibernateConceptBase;
 import hibernate.ISessionFactoryWrapper;
-import hibernate.SessionFactoryWrapper;
+import hibernate.SessionFactoryWrapperFactory;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.testng.annotations.Test;
@@ -14,7 +16,7 @@ import java.util.List;
 
 public class LazyLoadingConcept extends HibernateConceptBase {
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
-        return new SessionFactoryWrapper();
+        return SessionFactoryWrapperFactory.create(new AppConfigurationImpl().activeDatabase(), Databases.Main);
     }
 
     @Test

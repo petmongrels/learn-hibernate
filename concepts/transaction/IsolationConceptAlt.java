@@ -21,7 +21,7 @@ public class IsolationConceptAlt extends IsolationConceptBase {
 
     @Test
     public void readCommitedWhenSnapshotModeIsOff() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Alt);
+        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, databaseName());
         you.updateCustomerEmail(Customers.AshokKumar, newEmail());
         try {
             i.getCustomer(Customers.AshokKumar);

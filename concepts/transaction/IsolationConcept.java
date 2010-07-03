@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class IsolationConcept extends IsolationConceptBase {
     @BeforeMethod
@@ -105,9 +106,10 @@ public class IsolationConcept extends IsolationConceptBase {
 
     @Test
     public void phantomRead() throws Exception {
+        final UUID uuid = UUID.randomUUID();
         i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ, Databases.Main);
         ArrayList<Customer> customersList = i.getCustomersHavingInName("Ashok");
-        you.createCustomer("Ashok Mitra", "amitra@yahoo.com");
+        you.createCustomer("Ashok Mitra", "amitra" + uuid.toString() + "@yahoo.com");
         you.commit();
         ArrayList<Customer> newCustomersList = i.getCustomersHavingInName("Ashok");
         assert customersList.size() + 1 == newCustomersList.size();

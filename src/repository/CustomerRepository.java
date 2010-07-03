@@ -1,14 +1,14 @@
 package repository;
 
-import database.sqlserver.SqlServerConnection;
+import database.DatabaseConnection;
 import domain.Customer;
 
 import java.util.ArrayList;
 
 public class CustomerRepository {
-    private final SqlServerConnection connection;
+    private final DatabaseConnection connection;
 
-    public CustomerRepository(SqlServerConnection connection) {
+    public CustomerRepository(DatabaseConnection connection) {
         this.connection = connection;
     }
 

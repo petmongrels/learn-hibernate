@@ -6,4 +6,5 @@ public interface AppConfiguration {
     int queryTimeoutInSeconds();
     String sqlServer();
     String oraclePassword();
+    String activeDatabase();
 }

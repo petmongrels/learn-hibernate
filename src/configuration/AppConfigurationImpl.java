@@ -36,4 +36,8 @@ public class AppConfigurationImpl implements AppConfiguration {
     public String oraclePassword() {
         return properties.getProperty("oracle.password");
     }
+
+    public String activeDatabase() {
+        return properties.getProperty("active.database");
+    }
 }

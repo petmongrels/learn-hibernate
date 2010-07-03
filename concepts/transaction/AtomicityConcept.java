@@ -1,8 +1,9 @@
 package transaction;
 
 import configuration.AppConfigurationImpl;
-import database.Databases;
-import database.sqlserver.SqlServerConnection;
+import configuration.DatabaseSettings;
+import database.DatabaseConnection;
+import database.DatabaseSettingsFactory;
 import domain.Account;
 import domain.BankTransaction;
 import org.testng.Assert;
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 
 public class AtomicityConcept {
-    private SqlServerConnection connection;
+    private DatabaseConnection connection;
     private BigDecimal balance;
     private Account account;
     private int numberOfTransactions;
@@ -23,7 +24,8 @@ public class AtomicityConcept {
 
     @BeforeTest
     public void setUp() throws Exception {
-        connection = new SqlServerConnection(new AppConfigurationImpl(), Databases.Main);
+        final DatabaseSettings databaseSettings = DatabaseSettingsFactory.create(new AppConfigurationImpl());
+        connection = new DatabaseConnection(databaseSettings);
         accountRepository = new AccountRepository(connection);
         account = accountRepository.getAccount("SB12345678");
         balance = account.getBalance();

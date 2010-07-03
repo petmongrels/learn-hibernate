@@ -1,16 +1,18 @@
 package hibernate.performance;
 
+import configuration.AppConfigurationImpl;
+import database.Databases;
 import domain.Address;
 import domain.Customer;
 import hibernate.HibernateConceptBase;
 import hibernate.ISessionFactoryWrapper;
-import hibernate.SessionFactoryWrapper;
+import hibernate.SessionFactoryWrapperFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class SecondLevelCacheConcept extends HibernateConceptBase {
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
-        return new SessionFactoryWrapper();
+        return SessionFactoryWrapperFactory.create(new AppConfigurationImpl().activeDatabase(), Databases.Main);
     }
 
     @BeforeMethod

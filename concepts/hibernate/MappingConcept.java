@@ -1,5 +1,7 @@
 package hibernate;
 
+import configuration.AppConfigurationImpl;
+import database.Databases;
 import domain.Customer;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -7,7 +9,7 @@ import org.testng.annotations.Test;
 
 public class MappingConcept extends HibernateConceptBase {
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
-        return new SessionFactoryWrapper();
+        return SessionFactoryWrapperFactory.create(new AppConfigurationImpl().activeDatabase(), Databases.Main);
     }
 
     @Test

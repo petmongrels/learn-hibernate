@@ -1,5 +1,7 @@
 package hibernate;
 
+import configuration.AppConfigurationImpl;
+import database.Databases;
 import domain.Account;
 import domain.Address;
 import domain.BankTransaction;
@@ -17,7 +19,7 @@ public class SaveConcepts extends HibernateConceptBase {
     private Customer changedCustomer;
 
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
-        return new SessionFactoryWrapper();
+        return SessionFactoryWrapperFactory.create(new AppConfigurationImpl().activeDatabase(), Databases.Main);
     }
 
     @BeforeMethod

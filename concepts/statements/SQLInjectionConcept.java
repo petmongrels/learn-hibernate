@@ -1,8 +1,9 @@
 package statements;
 
 import configuration.AppConfigurationImpl;
-import database.Databases;
-import database.sqlserver.SqlServerConnection;
+import configuration.DatabaseSettings;
+import database.DatabaseConnection;
+import database.DatabaseSettingsFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -10,11 +11,12 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 
 public class SQLInjectionConcept {
-    private SqlServerConnection connection;
+    private DatabaseConnection connection;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        connection = new SqlServerConnection(new AppConfigurationImpl(), Databases.Main);
+        final DatabaseSettings databaseSettings = DatabaseSettingsFactory.create(new AppConfigurationImpl());
+        connection = new DatabaseConnection(databaseSettings);
         connection.beginTransaction();
     }
 

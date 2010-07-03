@@ -4,6 +4,16 @@ import oracle.jdbc.driver.OracleDriver;
 import org.hibernate.dialect.Oracle10gDialect;
 
 public class OracleSettings implements DatabaseSettings {
+    private AppConfiguration appConfiguration;
+
+    public OracleSettings() {
+        this(new AppConfigurationImpl());
+    }
+
+    public OracleSettings(AppConfiguration appConfiguration) {
+        this.appConfiguration = appConfiguration;
+    }
+
     public String driverClass() {
         return OracleDriver.class.getName();
     }
@@ -12,15 +22,19 @@ public class OracleSettings implements DatabaseSettings {
         return Oracle10gDialect.class.getName();
     }
 
-    public String url(AppConfiguration appConfiguration) {
+    public String url() {
         return "jdbc:oracle:thin:@localhost:1521:XE";
     }
 
-    public String user(AppConfiguration appConfiguration) {
+    public String user() {
         return "LearnHibernate";
     }
 
-    public String password(AppConfiguration appConfiguration) {
+    public String password() {
         return appConfiguration.oraclePassword();
+    }
+
+    public int queryTimeOut() {
+        return appConfiguration.queryTimeoutInSeconds();
     }
 }

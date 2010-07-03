@@ -1,26 +1,23 @@
-package database.sqlserver;
+package database;
 
-import configuration.AppConfiguration;
-import database.BlockedException;
-import database.DatabaseResource;
-import net.sourceforge.jtds.jdbc.Driver;
+import configuration.DatabaseSettings;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class SqlServerConnection {
+public class DatabaseConnection {
     private Connection connection;
-    private AppConfiguration configuration;
+    private DatabaseSettings databaseSettings;
 
-    public SqlServerConnection(AppConfiguration configuration, String database) throws Exception {
-        this(configuration, Connection.TRANSACTION_READ_COMMITTED, database);
+    public DatabaseConnection(DatabaseSettings databaseSettings) throws Exception {
+        this(databaseSettings, Connection.TRANSACTION_READ_COMMITTED);
     }
 
-    public SqlServerConnection(AppConfiguration configuration, int isolationLevel, String database) throws Exception {
-        this.configuration = configuration;
-        String connectionUrl = "jdbc:jtds:sqlserver://" + configuration.sqlServer() + ":1433/" + database + ";SelectMethod=cursor";
-        Class.forName(Driver.class.getName());
-        connection = DriverManager.getConnection(connectionUrl, configuration.sqlServerUser(), configuration.sqlServerPassword());
+    public DatabaseConnection(DatabaseSettings databaseSettings, int isolationLevel) throws Exception {
+        this.databaseSettings = databaseSettings;
+        String connectionUrl = databaseSettings.url();
+        Class.forName(databaseSettings.driverClass());
+        connection = DriverManager.getConnection(connectionUrl, databaseSettings.user(), databaseSettings.password());
         connection.setTransactionIsolation(isolationLevel);
     }
 
@@ -106,7 +103,7 @@ public class SqlServerConnection {
 
     private PreparedStatement preparedStatement(String sqlQuery) throws SQLException {
         final PreparedStatement statement = connection.prepareStatement(sqlQuery);
-        statement.setQueryTimeout(configuration.queryTimeoutInSeconds());
+        statement.setQueryTimeout(databaseSettings.queryTimeOut());
         return statement;
     }
 
@@ -141,9 +138,5 @@ public class SqlServerConnection {
 
     public void commit() throws Exception {
         connection.commit();
-    }
-
-    public void noTransaction() throws Exception {
-        connection.setAutoCommit(true);
     }
 }

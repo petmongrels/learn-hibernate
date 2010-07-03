@@ -2,8 +2,10 @@ package connectivity;
 
 import configuration.AppConfiguration;
 import configuration.AppConfigurationImpl;
+import configuration.DatabaseSettings;
+import database.DatabaseSettingsFactory;
 import database.Databases;
-import database.sqlserver.SqlServerConnection;
+import database.DatabaseConnection;
 import hibernate.OracleSessionFactoryWrapper;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
@@ -13,9 +15,10 @@ public class DatabaseConnectivity {
     @Test
     public void canConnectToSqlServer() throws Exception {
         AppConfiguration configuration = new AppConfigurationImpl();
-        SqlServerConnection connection = null;
+        DatabaseConnection connection = null;
         try {
-            connection = new SqlServerConnection(configuration, Databases.Main);
+            final DatabaseSettings databaseSettings = DatabaseSettingsFactory.create(configuration, Databases.Main, "sqlserver");
+            connection = new DatabaseConnection(databaseSettings);
         } finally {
             if (connection != null) connection.close();
         }

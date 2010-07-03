@@ -3,7 +3,8 @@ package configuration;
 public interface DatabaseSettings {
     String driverClass();
     String dialect();
-    String url(AppConfiguration appConfiguration);
-    String user(AppConfiguration appConfiguration);
-    String password(AppConfiguration appConfiguration);
+    String url();
+    String user();
+    String password();
+    int queryTimeOut();
 }

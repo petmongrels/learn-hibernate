@@ -1,5 +1,7 @@
 package hibernate;
 
+import configuration.AppConfigurationImpl;
+import database.Databases;
 import domain.Customer;
 import domain.providers.SavingsAccountNumberProvider;
 import org.hibernate.StaleObjectStateException;
@@ -17,7 +19,7 @@ public class VersioningConcept extends HibernateConceptBase {
     private CustomerService you;
 
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
-        return new SessionFactoryWrapper();
+        return SessionFactoryWrapperFactory.create(new AppConfigurationImpl().activeDatabase(), Databases.Main);
     }
 
     @BeforeMethod

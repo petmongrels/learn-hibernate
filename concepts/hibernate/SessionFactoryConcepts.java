@@ -1,5 +1,7 @@
 package hibernate;
 
+import configuration.AppConfigurationImpl;
+import database.Databases;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.testng.annotations.AfterTest;
@@ -11,7 +13,8 @@ public class SessionFactoryConcepts {
 
     @BeforeTest
     public void testFixtureSetup() {
-        sessionFactory = new SessionFactoryWrapper().getSessionFactory();
+        final ISessionFactoryWrapper sessionFactoryWrapper = SessionFactoryWrapperFactory.create(new AppConfigurationImpl().activeDatabase(), Databases.Main);
+        sessionFactory = sessionFactoryWrapper.getSessionFactory();
     }
 
     @AfterTest
@@ -22,7 +25,8 @@ public class SessionFactoryConcepts {
     @Test
     public void alwaysUseSameSessionFactoryAsItIsExpensive() {
         assert sessionFactory != null;
-        SessionFactory sessionFactoryAgain = new SessionFactoryWrapper().getSessionFactory();
+        final ISessionFactoryWrapper sessionFactoryWrapper = SessionFactoryWrapperFactory.create(new AppConfigurationImpl().activeDatabase(), Databases.Main);
+        SessionFactory sessionFactoryAgain = sessionFactoryWrapper.getSessionFactory();
         assert sessionFactory == sessionFactoryAgain;
     }
 
