@@ -67,11 +67,12 @@ create table Transactions
 	Id number(10) not null,
 	Amount number(5,2) not null,
 	Type varchar2(10) not null,
-	AccountId number(10) not null,
+	AccountId number(10) null,
 	Description varchar2(100) null,
 	constraint PK_Transaction primary key (Id),
 	constraint FK_TransactionsAccount foreign key(AccountId) references Accounts(Id)
 );
+alter table Transactions modify (AccountId not null deferrable initially deferred);
 create sequence Transactions_Seq;
 create or replace trigger Transactions_bir
 before insert on Transactions
@@ -89,10 +90,11 @@ create table Addresses
     Id number(10) not null,
     Line1 varchar2(100) not null,
     Line2 varchar2(100) null,
-    CustomerId int not null,
+    CustomerId int null,
     constraint PK_Addresses primary key(Id),
     constraint FK_CustomersAddresses foreign key(CustomerId) references Customers(Id)
 );
+alter table Addresses modify (CustomerId not null deferrable initially deferred);
  create sequence Addresses_Seq;
  create or replace trigger Addresses_bir
  before insert on Addresses

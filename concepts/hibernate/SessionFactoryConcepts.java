@@ -4,23 +4,18 @@ import configuration.AppConfigurationImpl;
 import database.Databases;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class SessionFactoryConcepts {
     private SessionFactory sessionFactory;
 
-    @BeforeTest
+    @BeforeClass
     public void testFixtureSetup() {
         final ISessionFactoryWrapper sessionFactoryWrapper = SessionFactoryWrapperFactory.create(new AppConfigurationImpl().activeDatabase(), Databases.Main);
         sessionFactory = sessionFactoryWrapper.getSessionFactory();
     }
 
-    @AfterTest
-    public void testFixtureTearDown() {
-        if (sessionFactory != null) sessionFactory.close();
-    }
 
     @Test
     public void alwaysUseSameSessionFactoryAsItIsExpensive() {

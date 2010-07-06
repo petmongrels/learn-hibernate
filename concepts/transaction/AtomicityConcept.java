@@ -8,7 +8,7 @@ import domain.Account;
 import domain.BankTransaction;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import repository.AccountRepository;
 
@@ -22,7 +22,7 @@ public class AtomicityConcept {
     private int numberOfTransactions;
     private AccountRepository accountRepository;
 
-    @BeforeTest
+    @BeforeClass
     public void setUp() throws Exception {
         final DatabaseSettings databaseSettings = DatabaseSettingsFactory.create(new AppConfigurationImpl());
         connection = new DatabaseConnection(databaseSettings);

@@ -19,8 +19,8 @@ public class CustomerService {
         return customer;
     }
 
-    public void updateCustomer(Customer customer) {
-        session.update(session.load(Customer.class, customer.getId()));
+    public void updateAndCommit(Customer customer) {
+        session.update(customer);
         commit();
     }
 

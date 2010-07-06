@@ -12,9 +12,10 @@ import org.testng.annotations.Test;
 import service.CustomerService;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class VersioningConcept extends HibernateConceptBase {
-    private Session otherSession;
+    private Session yourSession;
     private CustomerService i;
     private CustomerService you;
 
@@ -25,25 +26,27 @@ public class VersioningConcept extends HibernateConceptBase {
     @BeforeMethod
     public void setUp() {
         super.setUp();
-        otherSession = sessionFactory.openSession();
-        otherSession.beginTransaction();
+        yourSession = sessionFactory.openSession();
         i = new CustomerService(session);
-        you = new CustomerService(otherSession);
+        you = new CustomerService(yourSession);
     }
 
     @AfterMethod
     public void tearDown() {
         super.tearDown();
-        otherSession.close();
+        yourSession.close();
     }
 
     @Test
     public void usingVersionColumn() {
-        final Customer customer = i.setCustomerEmail(1, "ask@thoughtworks.com");
-        final Customer yourCustomer = you.setCustomerEmail(1, "ak@thoughtworks.com");
-        i.updateCustomer(customer);
+        final Customer customer = i.setCustomerEmail(1, "ask" + UUID.randomUUID().toString() + "@thoughtworks.com");
+        final Customer yourCustomer = you.setCustomerEmail(1, "ak" + UUID.randomUUID().toString() + "@thoughtworks.com");
+        
+        i.updateAndCommit(customer);
+        
+        yourSession.beginTransaction();
         try {
-            you.updateCustomer(yourCustomer);
+            you.updateAndCommit(yourCustomer);
             assert false;
         } catch (StaleObjectStateException ignored) {
         }
@@ -56,13 +59,14 @@ public class VersioningConcept extends HibernateConceptBase {
         i.commit();
         i.close();
 
-        Customer yourCustomer = you.setCustomerEmail(1, "ak@thoughtworks.com");
-        you.updateCustomer(yourCustomer);
-        you.commit();
+        yourSession.beginTransaction();
+        Customer yourCustomer = you.setCustomerEmail(1, "ak" + UUID.randomUUID().toString() + "@thoughtworks.com");
+        you.updateAndCommit(yourCustomer);
 
         session = sessionFactory.openSession();
         session.beginTransaction();
-        customer = i.setCustomerEmail(1, "ask@thoughtworks.com");
+        i = new CustomerService(session);
+        customer = i.setCustomerEmail(1, "ask"  + UUID.randomUUID().toString() + "@thoughtworks.com");
         customer.setVersion(disconnectedCustomersVersion);
         session.saveOrUpdate(customer);
         session.flush();
@@ -75,14 +79,14 @@ public class VersioningConcept extends HibernateConceptBase {
         i.commit();
         i.close();
 
-        Customer yourCustomer = you.setCustomerEmail(1, "ak@thoughtworks.com");
-        you.updateCustomer(yourCustomer);
-        you.commit();        
+        yourSession.beginTransaction();
+        Customer yourCustomer = you.setCustomerEmail(1, "ak" + UUID.randomUUID().toString() + "@thoughtworks.com");
+        you.updateAndCommit(yourCustomer);
 
         session = sessionFactory.openSession();
         session.beginTransaction();
         i = new CustomerService(session);
-        customer = i.setCustomerEmail(1, "ask@thoughtworks.com");
+        customer = i.setCustomerEmail(1, "ask" + UUID.randomUUID().toString() + "@thoughtworks.com");
         try {
             customer.verifyVersion(disconnectedCustomersVersion);
             assert false;

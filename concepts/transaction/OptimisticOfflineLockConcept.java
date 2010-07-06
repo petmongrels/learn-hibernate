@@ -5,7 +5,7 @@ import database.Databases;
 import database.RecordNotModifiedException;
 import domain.Account;
 import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -15,7 +15,7 @@ public class OptimisticOfflineLockConcept {
     private DatabaseUser you;
     private DatabaseUser i;
 
-    @BeforeTest
+    @BeforeClass
     public void setUp() throws Exception {
         you = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);
         i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);

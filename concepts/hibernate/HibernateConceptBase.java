@@ -1,29 +1,23 @@
 package hibernate;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.*;
 
 public class HibernateConceptBase {
     protected SessionFactory sessionFactory;
     protected Session session;
 
-    @BeforeTest
+    @BeforeClass
     public void testFixtureSetup() {
         sessionFactory = sessionFactoryWrapper().getSessionFactory();
         sessionFactory.getStatistics().setStatisticsEnabled(true);
+        sessionFactory.getStatistics().clear();
     }
 
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
         throw new RuntimeException("Cannot make it abstract, because TestNG doesn't work with it.");
-    }
-
-    @AfterTest
-    public void testFixtureTearDown() {
-        if (sessionFactory != null) sessionFactory.close();
     }
 
     @BeforeMethod
@@ -53,7 +47,8 @@ public class HibernateConceptBase {
 
     @AfterMethod
     public void tearDown() {
-        session.getTransaction().rollback();
+        final Transaction transaction = session.getTransaction();
+        if (transaction.isActive()) transaction.rollback();
         session.close();
     }
 

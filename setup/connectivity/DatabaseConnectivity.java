@@ -36,7 +36,6 @@ public class DatabaseConnectivity {
         } finally {
             assert session != null;
             session.close();
-            sessionFactory.close();
         }
     }
 }
