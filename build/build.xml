@@ -1,4 +1,4 @@
-<project name="learn-hibernate" default="sql.test.data">
+<project name="learn-hibernate" default="test.data">
     <loadproperties srcFile="build.properties"/>
     <target name="sql.db" depends="sql.no.db">
         <sql-exec file="database.sql" database="LearnHibernate"/>
@@ -16,9 +16,8 @@
         <sql-exec file="schema.sql" database="LearnHibernateAlt"/>
     </target>
 
-    <target name="sql.test.data" depends="sql.schema">
-        <sql-exec file="test-data.sql" database="LearnHibernate"/>
-        <sql-exec file="test-data.sql" database="LearnHibernateAlt"/>
+    <target name="test.data" depends="sql.schema, oracle.schema">
+        <java classname="TestDataCreator" classpath="../out/production/learn-hibernate;../lib/jtds-1.2.5.jar;../lib/ojdbc14_g.jar" dir=".." fork="true" failonerror="true"/>
     </target>
 
     <target name="oracle.db" depends="oracle.no.db">
@@ -31,10 +30,6 @@
 
     <target name="oracle.schema" depends="oracle.db">
         <ora-exec file="@schema.sql" user="LearnHibernate"/>
-    </target>
-
-    <target name="oracle.test.data" depends="oracle.schema">
-        <ora-exec file="@test-data.sql" user="LearnHibernate"/>
     </target>
 
     <macrodef name="ora-exec">

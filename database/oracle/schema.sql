@@ -43,7 +43,7 @@ end;
 create table Accounts
 (
 	Id number(10) not null,
-	Number varchar2(50) not null,
+	AccountNumber varchar2(50) not null,
 	CustomerId number(10) null,
 	Balance number(10,2) not null,
 	constraint PK_Accounts primary key (Id),

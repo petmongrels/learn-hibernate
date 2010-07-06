@@ -41,6 +41,10 @@ public class DatabaseConnection {
         }
     }
 
+    public Object queryValue(String sqlQuery, Object... parameters) throws Exception {
+        return queryValues(sqlQuery, parameters)[0];
+    }
+
     private ArrayList getRow(ResultSet resultSet) {
         ArrayList<Object> list = new ArrayList<Object>(1);
         int resultIndex = 1;
