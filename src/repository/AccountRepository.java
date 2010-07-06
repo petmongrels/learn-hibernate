@@ -15,7 +15,7 @@ public class AccountRepository {
 
     public Account getAccount(String accountNumber) throws Exception {
         Object[] accountDetails = connection.queryValues("select Id, Balance, Version from Accounts where AccountNumber = ?", accountNumber);
-        return new Account(null, (Integer) accountDetails[0], (BigDecimal) accountDetails[1], accountNumber, (Integer) accountDetails[2]);
+        return new Account(null, Integer.parseInt(accountDetails[0].toString()), (BigDecimal) accountDetails[1], accountNumber, Integer.parseInt(accountDetails[2].toString()));
     }
 
     public void updateBalanceWithLock(Account account) throws Exception {

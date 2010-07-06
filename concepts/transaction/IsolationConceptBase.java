@@ -14,10 +14,14 @@ public abstract class IsolationConceptBase {
     @AfterMethod
     public void tearDown() throws Exception {
         try {
-            you.rollback();
-            you.closeConnection();
-            i.rollback();
-            i.closeConnection();
+            if (you != null) {
+                you.rollback();
+                you.closeConnection();
+            }
+            if (i != null) {
+                i.rollback();
+                i.closeConnection();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

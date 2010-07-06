@@ -39,7 +39,7 @@ public class AtomicityConcept {
 
     private int numberOfTransactions() throws Exception {
         Object[] objects = connection.queryValues("select count(*) from Transactions where AccountId = ?", account.getId());
-        return (Integer)objects[0];
+        return Integer.parseInt(objects[0].toString());
     }
 
     @Test

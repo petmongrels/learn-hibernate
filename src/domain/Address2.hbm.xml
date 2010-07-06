@@ -2,8 +2,11 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="domain" default-access="field">
     <class name="Address" table="Addresses" lazy="true">
+        <cache usage="read-write"/>
         <id name="id" column="Id">
-            <generator class="native"/>
+            <generator class="native">
+              <param name="sequence">Addresses_Seq</param>
+            </generator>            
         </id>
         <property name="line1"/>
         <property name="line2"/>

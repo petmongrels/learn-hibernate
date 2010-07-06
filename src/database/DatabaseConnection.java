@@ -18,7 +18,12 @@ public class DatabaseConnection {
         String connectionUrl = databaseSettings.url();
         Class.forName(databaseSettings.driverClass());
         connection = DriverManager.getConnection(connectionUrl, databaseSettings.user(), databaseSettings.password());
-        connection.setTransactionIsolation(isolationLevel);
+        try {
+            connection.setTransactionIsolation(isolationLevel);
+        } catch (SQLException e) {
+            connection.close();
+            throw e;
+        }
     }
 
     public void close() throws Exception {
@@ -128,7 +133,7 @@ public class DatabaseConnection {
     }
 
     private Exception getException(SQLException e) throws SQLException {
-        if (e.getMessage().equals("The query has timed out.")) return new BlockedException(e);
+        if (e.getMessage().equals("The query has timed out.") || e.getMessage().trim().equals("ORA-01013: user requested cancel of current operation")) return new BlockedException(e);
         return e;
     }
 

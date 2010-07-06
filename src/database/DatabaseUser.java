@@ -15,7 +15,10 @@ public class DatabaseUser {
     private AccountRepository accountRepository;
 
     public DatabaseUser(int isolationLevel, String database) throws Exception {
-        final DatabaseSettings databaseSettings = DatabaseSettingsFactory.create(new AppConfigurationImpl(), database);
+        this(DatabaseSettingsFactory.create(new AppConfigurationImpl(), database), isolationLevel);
+    }
+
+    public DatabaseUser(DatabaseSettings databaseSettings, int isolationLevel) throws Exception {
         connection = new DatabaseConnection(databaseSettings, isolationLevel);
         customerRepository = new CustomerRepository(connection);
         accountRepository = new AccountRepository(connection);
@@ -24,10 +27,6 @@ public class DatabaseUser {
 
     public int updateCustomerEmail(String name, String email) throws Exception {
         return connection.execute("update Customers set Email = ? where Name = ?", email, name);
-    }
-
-    public int updateCustomerEmail(String name, String email, int version) throws Exception {
-        return connection.execute("update Customers set Email = ?, Version = ? where Name = ? and Version = ?", email, version + 1, name, version);
     }
 
     public Customer getCustomer(String name) throws Exception {

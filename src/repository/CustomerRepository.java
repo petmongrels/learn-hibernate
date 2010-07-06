@@ -18,7 +18,7 @@ public class CustomerRepository {
     }
 
     private Customer createCustomer(Object[] row) {
-        return new Customer((Integer)row[0], (String)row[1], (String)row[2], (Integer)row[3]);
+        return new Customer(Integer.parseInt(row[0].toString()), (String)row[1], (String)row[2], Integer.parseInt(row[3].toString()));
     }
 
     public ArrayList<Customer> getCustomersHavingInName(String token) throws Exception {

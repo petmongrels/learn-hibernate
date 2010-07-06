@@ -1,5 +1,7 @@
 package transaction;
 
+import configuration.AltSqlServerSettings;
+import configuration.AppConfigurationImpl;
 import data.Customers;
 import database.BlockedException;
 import database.DatabaseUser;
@@ -12,8 +14,12 @@ import java.sql.Connection;
 public class IsolationConceptAlt extends IsolationConceptBase {
     @BeforeMethod
     public void setUp() throws Exception {
-        you = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, databaseName());
-    }    
+        you = createDatabaseUser();
+    }
+
+    private DatabaseUser createDatabaseUser() throws Exception {
+        return new DatabaseUser(new AltSqlServerSettings(new AppConfigurationImpl()), Connection.TRANSACTION_READ_COMMITTED);
+    }
 
     protected String databaseName() {
         return Databases.Alt;
@@ -21,7 +27,7 @@ public class IsolationConceptAlt extends IsolationConceptBase {
 
     @Test
     public void readCommitedWhenSnapshotModeIsOff() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, databaseName());
+        i = createDatabaseUser();
         you.updateCustomerEmail(Customers.AshokKumar, newEmail());
         try {
             i.getCustomer(Customers.AshokKumar);

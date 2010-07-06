@@ -26,7 +26,8 @@ create table Customers
     CityId number(10) not null,
     IsCommercial number(1) default 0 not null,
     constraint PK_Customers primary key (Id),
-    constraint FK_CustomersCity foreign key(CityId) references Cities(Id)
+    constraint FK_CustomersCity foreign key(CityId) references Cities(Id),
+    constraint UK_CustomersEmail unique(Email)
 );
 create sequence Customers_Seq;
 create or replace trigger Customers_bir
@@ -46,6 +47,7 @@ create table Accounts
 	AccountNumber varchar2(50) not null,
 	CustomerId number(10) null,
 	Balance number(10,2) not null,
+	Version number(10) default 1 not null, 
 	constraint PK_Accounts primary key (Id),
 	constraint FK_AccountsCustomer foreign key(CustomerId) references Customers(Id)
 );
@@ -95,8 +97,8 @@ create table Addresses
     constraint FK_CustomersAddresses foreign key(CustomerId) references Customers(Id)
 );
 alter table Addresses modify (CustomerId not null deferrable initially deferred);
- create sequence Addresses_Seq;
- create or replace trigger Addresses_bir
+create sequence Addresses_Seq;
+create or replace trigger Addresses_bir
  before insert on Addresses
  for each row
  when (new.Id is null)
@@ -105,4 +107,4 @@ alter table Addresses modify (CustomerId not null deferrable initially deferred)
    into   :new.Id
    from   dual;
  end;
- /
+/

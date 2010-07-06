@@ -1,27 +1,28 @@
 package transaction;
 
+import configuration.AppConfigurationImpl;
+import configuration.SqlServerSettings;
 import data.Customers;
 import database.BlockedException;
 import database.DatabaseUser;
 import database.Databases;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.sql.Connection;
 
-public class IsolationScenario extends IsolationConceptBase {
+public class SqlServerIsolationScenario extends IsolationConceptBase {
     protected String databaseName() {
         return Databases.Main;
     }
 
-    @BeforeMethod
-    public void setUp() throws Exception {
-        you = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ, databaseName());
-        i = new DatabaseUser(Connection.TRANSACTION_REPEATABLE_READ, databaseName());
+    private DatabaseUser createDatabaseUser(int isolationLevel) throws Exception {
+        return new DatabaseUser(new SqlServerSettings(new AppConfigurationImpl()), isolationLevel);
     }
 
     @Test
-    public void pessimisticLock() throws Exception {
+    public void noOneCanWriteWhenRepeatableReadOrHigherLockAcquired() throws Exception {
+        you = createDatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
+        i = createDatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
         i.getCustomer(Customers.AshokKumar);
         you.getCustomer(Customers.AshokKumar);
         try {

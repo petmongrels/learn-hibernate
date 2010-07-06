@@ -3,7 +3,9 @@
 <hibernate-mapping package="domain">
     <class name="City" table="Cities" lazy="true">
         <id name="id" column="Id" access="field">
-            <generator class="native"/>
+            <generator class="native">
+              <param name="sequence">Cities_Seq</param>
+            </generator>
         </id>
         <property name="name" access="field"/>
     </class>

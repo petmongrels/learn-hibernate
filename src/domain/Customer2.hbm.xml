@@ -3,7 +3,9 @@
 <hibernate-mapping package="domain">
     <class name="Customer" table="Customers">
         <id name="id" column="Id" access="field">
-            <generator class="native"/>
+            <generator class="native">
+              <param name="sequence">Customers_Seq</param>
+            </generator>
         </id>
         <version name="version" access="field"/>
         <property name="email" access="field"/>

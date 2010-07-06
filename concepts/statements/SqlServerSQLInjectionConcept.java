@@ -2,20 +2,20 @@ package statements;
 
 import configuration.AppConfigurationImpl;
 import configuration.DatabaseSettings;
+import configuration.SqlServerSettings;
 import database.DatabaseConnection;
-import database.DatabaseSettingsFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
-public class SQLInjectionConcept {
+public class SqlServerSQLInjectionConcept {
     private DatabaseConnection connection;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        final DatabaseSettings databaseSettings = DatabaseSettingsFactory.create(new AppConfigurationImpl());
+        final DatabaseSettings databaseSettings = new SqlServerSettings(new AppConfigurationImpl());
         connection = new DatabaseConnection(databaseSettings);
         connection.beginTransaction();
     }

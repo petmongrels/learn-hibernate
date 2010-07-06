@@ -27,8 +27,8 @@ public class HibernateConceptBase {
 
     protected void reopenSession() {
         session.close();
-        openSession();
         clearStatistics();
+        openSession();
     }
 
     protected void clearStatistics() {
