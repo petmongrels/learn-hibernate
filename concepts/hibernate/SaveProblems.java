@@ -6,11 +6,11 @@ import org.testng.annotations.Test;
 
 public class SaveProblems extends HibernateConceptBase {
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
-        return new AltSessionFactoryWrapper();
+        return new SqlServerSessionFactoryWrapper();
     }
 
     @Test
-    public void saveOrUpdateFailsIfInverseIsFalse() {
+    public void save_Or_Update_Fails_If_Inverse_Is_False() {
         Customer customer = (Customer) session.load(Customer.class, 1);
         Customer clonedCustomer = customer.copy();
         clonedCustomer.setEmail("aksx@thoughtworks.com");

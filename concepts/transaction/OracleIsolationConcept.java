@@ -1,7 +1,6 @@
 package transaction;
 
 import data.Customers;
-import database.BlockedException;
 import database.DatabaseUser;
 import database.Databases;
 import domain.Customer;
@@ -16,17 +15,13 @@ import java.util.UUID;
 public class OracleIsolationConcept extends IsolationConceptBase {
     @BeforeMethod
     public void setUp() throws Exception {
-        you = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, databaseName());
-    }
-
-    protected String databaseName() {
-        return Databases.Main;
+        you = new DatabaseUser(Databases.Main, Connection.TRANSACTION_READ_COMMITTED);
     }
 
     @Test
     public void cannotReadUncommitedData() throws Exception {
         try {
-            i = new DatabaseUser(Connection.TRANSACTION_READ_UNCOMMITTED, Databases.Main);
+            i = new DatabaseUser(Databases.Main, Connection.TRANSACTION_READ_UNCOMMITTED);
             assert false;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -35,7 +30,7 @@ public class OracleIsolationConcept extends IsolationConceptBase {
 
     @Test
     public void repeatableRead() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_SERIALIZABLE, Databases.Main);
+        i = new DatabaseUser(Databases.Main, Connection.TRANSACTION_SERIALIZABLE);
         Customer customer = i.getCustomer(Customers.AshokKumar);
         you.updateCustomerEmail(Customers.AshokKumar, newEmail());
         assert customer.getEmail().equals(i.getCustomer(Customers.AshokKumar).getEmail());
@@ -44,7 +39,7 @@ public class OracleIsolationConcept extends IsolationConceptBase {
     @Test
     public void phantomRead() throws Exception {
         final UUID uuid = UUID.randomUUID();
-        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);
+        i = new DatabaseUser(Databases.Main, Connection.TRANSACTION_READ_COMMITTED);
         ArrayList<Customer> customersList = i.getCustomersHavingInName("Ashok");
         you.createCustomer("Ashok Mitra", "amitra" + uuid.toString() + "@yahoo.com");
         you.commit();
@@ -54,31 +49,27 @@ public class OracleIsolationConcept extends IsolationConceptBase {
 
     @Test
     public void repeatableReadNotBlockedByOthersInserts() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_SERIALIZABLE, Databases.Main);
+        i = new DatabaseUser(Databases.Main, Connection.TRANSACTION_SERIALIZABLE);
         i.getCustomersHavingInName("Ashok");
         you.createCustomer("Kishore Kumar", "kkumar@yahoo.com");
         i.getCustomersHavingInName("Ashok");
     }
 
     @Test
+    public void noLockEscalationEvenWhenMajorityOfRowsRead() throws Exception {
+        i = new DatabaseUser(Databases.Main, Connection.TRANSACTION_SERIALIZABLE);
+        i.getCustomersHavingInEmail("bollywood");
+        you.updateCustomerEmail(Customers.AshokKumar, newEmail());
+    }
+
+    @Test
     public void noPhantomEvenWhenTheDatabaseHasChanged() throws Exception {
         final UUID uuid = UUID.randomUUID();
-        i = new DatabaseUser(Connection.TRANSACTION_SERIALIZABLE, Databases.Main);
+        i = new DatabaseUser(Databases.Main, Connection.TRANSACTION_SERIALIZABLE);
         ArrayList<Customer> customersList = i.getCustomersHavingInName("Ashok");
         you.createCustomer("Ashok Mitra", "amitra" + uuid.toString() + "@yahoo.com");
         you.commit();
         ArrayList<Customer> newCustomersList = i.getCustomersHavingInName("Ashok");
         assert customersList.size() == newCustomersList.size();
-    }
-
-    @Test
-    public void updateOnSameRowBlocks() throws Exception {
-        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);
-        you.updateCustomerEmail(Customers.AshokKumar, newEmail());
-        try {
-            i.updateCustomerEmail(Customers.AshokKumar, newEmail());
-            assert false;
-        } catch (BlockedException ignored) {
-        }
     }
 }

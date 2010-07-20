@@ -5,7 +5,6 @@ import configuration.SqlServerSettings;
 import data.Customers;
 import database.BlockedException;
 import database.DatabaseUser;
-import database.Databases;
 import domain.Customer;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -22,10 +21,6 @@ public class SqlServerIsolationConcept extends IsolationConceptBase {
 
     private DatabaseUser createDatabaseUser(int isolationLevel) throws Exception {
         return new DatabaseUser(new SqlServerSettings(new AppConfigurationImpl()), isolationLevel);
-    }    
-
-    protected String databaseName() {
-        return Databases.Main;
     }
 
     @Test
@@ -35,17 +30,6 @@ public class SqlServerIsolationConcept extends IsolationConceptBase {
         you.updateCustomerEmail(Customers.AshokKumar, newEmail);
         Customer customer = i.getCustomer("Ashok Kumar");
         assert customer.getEmail().equals(newEmail);
-    }
-
-    @Test
-    public void updateOnSameRowBlocks() throws Exception {
-        i = createDatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
-        you.updateCustomerEmail(Customers.AshokKumar, newEmail());
-        try {
-            i.updateCustomerEmail(Customers.AshokKumar, newEmail());
-            assert false;
-        } catch (BlockedException ignored) {
-        }
     }
 
     @Test

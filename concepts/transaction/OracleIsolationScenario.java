@@ -4,17 +4,12 @@ import configuration.AppConfigurationImpl;
 import configuration.OracleSettings;
 import data.Customers;
 import database.DatabaseUser;
-import database.Databases;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.sql.Connection;
 
 public class OracleIsolationScenario extends IsolationConceptBase {
-    protected String databaseName() {
-        return Databases.Main;
-    }
-
     @BeforeMethod
     public void setUp() throws Exception {
         you = createDatabaseUser(Connection.TRANSACTION_SERIALIZABLE);

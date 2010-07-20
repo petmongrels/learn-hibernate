@@ -14,7 +14,7 @@ public class DatabaseUser {
     private final CustomerRepository customerRepository;
     private AccountRepository accountRepository;
 
-    public DatabaseUser(int isolationLevel, String database) throws Exception {
+    public DatabaseUser(String database, int isolationLevel) throws Exception {
         this(DatabaseSettingsFactory.create(new AppConfigurationImpl(), database), isolationLevel);
     }
 
@@ -43,6 +43,10 @@ public class DatabaseUser {
 
     public void commit() throws Exception {
         connection.commit();
+    }
+
+    public void beginTransaction() throws Exception {
+        connection.beginTransaction();
     }
 
     public ArrayList<Customer> getCustomersHavingInName(String nameToken) throws Exception {

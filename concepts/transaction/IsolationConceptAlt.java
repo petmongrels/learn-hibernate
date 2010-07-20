@@ -21,10 +21,6 @@ public class IsolationConceptAlt extends IsolationConceptBase {
         return new DatabaseUser(new AltSqlServerSettings(new AppConfigurationImpl()), Connection.TRANSACTION_READ_COMMITTED);
     }
 
-    protected String databaseName() {
-        return Databases.Alt;
-    }
-
     @Test
     public void readCommitedWhenSnapshotModeIsOff() throws Exception {
         i = createDatabaseUser();

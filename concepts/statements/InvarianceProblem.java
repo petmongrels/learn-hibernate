@@ -16,7 +16,8 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 public class InvarianceProblem extends HibernateConceptBase {
-    private Session otherSession;
+    private Session you;
+    private Session i;
 
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
         return SessionFactoryWrapperFactory.create(new AppConfigurationImpl().activeDatabase(), Databases.Main);
@@ -25,39 +26,40 @@ public class InvarianceProblem extends HibernateConceptBase {
     @BeforeMethod
     public void setUp() {
         super.setUp();
-        otherSession = sessionFactory.openSession();
-        otherSession.beginTransaction();
+        you = sessionFactory.openSession();
+        you.beginTransaction();
+        i = session;
     }
 
     @AfterMethod
     public void tearDown() {
         super.tearDown();
-        otherSession.getTransaction().rollback();
-        otherSession.close();
+        you.getTransaction().rollback();
+        you.close();
     }
 
     @Test
     public void dontCheckUniquenessInCodeBecauseOfRaceConditions() {
-        List list = session.createCriteria(City.class).list();
+        List list = i.createCriteria(City.class).list();
 
-        assertCityAlreadyNotPresent(new City("Chennai"), session);
+        assertCityAlreadyNotPresent(new City("Chennai"), i);
 
-        otherSession.save(new City("Chennai"));
-        otherSession.flush();
-        session.save(new City("Chennai"));
-        session.flush();
+        you.save(new City("Chennai"));
+        you.flush();
+        i.save(new City("Chennai"));
+        i.flush();
 
-        assert list.size() + 1 == otherSession.createCriteria(City.class).list().size();
-        assert list.size() + 1 == session.createCriteria(City.class).list().size();
+        assert list.size() + 1 == you.createCriteria(City.class).list().size();
+        assert list.size() + 1 == you.createCriteria(City.class).list().size();
     }
 
     @Test
     public void letDatabaseVerifyUniqueness() {
-        Customer customerOne = (Customer) session.load(Customer.class, 1);
-        Customer customerTwo = (Customer) session.load(Customer.class, 2);
+        Customer customerOne = (Customer) i.load(Customer.class, 1);
+        Customer customerTwo = (Customer) i.load(Customer.class, 2);
         try {
             customerTwo.setEmail(customerOne.getEmail());
-            session.flush();
+            i.flush();
             assert false;
         } catch (ConstraintViolationException ignored) {
         }

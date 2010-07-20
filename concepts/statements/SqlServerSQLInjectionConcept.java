@@ -27,7 +27,7 @@ public class SqlServerSQLInjectionConcept {
     }
 
     @Test
-    public void executeUsingCreatedStatement() throws Exception {
+    public void executeUsingStatement() throws Exception {
         ArrayList<Object[]> customers = connection.queryRows("select Id from Customers where Name = '" + getName() + "'");
         assert customers.size() == 1;
         ArrayList<Object[]> transactions = connection.queryRows("select Id from Transactions");

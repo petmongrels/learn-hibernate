@@ -17,8 +17,8 @@ public class OptimisticOfflineLockConcept {
 
     @BeforeClass
     public void setUp() throws Exception {
-        you = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);
-        i = new DatabaseUser(Connection.TRANSACTION_READ_COMMITTED, Databases.Main);
+        you = new DatabaseUser(Databases.Main, Connection.TRANSACTION_READ_COMMITTED);
+        i = new DatabaseUser(Databases.Main, Connection.TRANSACTION_READ_COMMITTED);
     }
 
     @AfterTest

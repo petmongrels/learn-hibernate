@@ -9,7 +9,7 @@ public class OracleSaveConcepts extends HibernateConceptBase {
     }
 
     @Test
-    public void saveOrUpdateWorksWithoutInverseRelationship() {
+    public void save_Or_Update_Works_Without_Inverse_Relationship_Using_Deferred_Constraints() {
         Customer customer = (Customer) session.load(Customer.class, 1);
         Customer clonedCustomer = customer.copy();
         clonedCustomer.setEmail("aksx@thoughtworks.com");

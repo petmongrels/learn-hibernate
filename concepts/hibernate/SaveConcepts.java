@@ -34,31 +34,32 @@ public class SaveConcepts extends HibernateConceptBase {
     }
 
     @Test
-    public void saveOrUpdateDisconnectedObjectUpdatesTheEntireGraph() {
+    public void save_Or_Update_Disconnected_Object__Updates_The_Entire_Graph() {
         Account account = changedCustomer.getAccounts().get(0);
         account.withdraw(new BigDecimal(100));
         session.saveOrUpdate(account);
         session.flush();
 
         assert 1 == updateCount(Account.class);
-        assert account.transactionCount() - 1 == updateCount(BankTransaction.class);
         assert 1 == insertCount(BankTransaction.class);
+        assert account.transactionCount() - 1 == updateCount(BankTransaction.class);
     }
 
     @Test
-    public void merge() {
+    public void merge_When_Entire_Graph_Is_Edited() {
         Account account = changedCustomer.getAccounts().get(0);
+        account.withdraw(new BigDecimal(100));
         session.merge(account);
         session.flush();
 
-        assert 0 == updateCount(Account.class);
+        assert 1 == updateCount(Account.class);
         assert 0 == updateCount(BankTransaction.class);
-        assert 0 == insertCount(BankTransaction.class);
+        assert 1 == insertCount(BankTransaction.class);
         assert 4 == loadCount();
     }
 
     @Test
-    public void doNotClearCollection() {
+    public void do_Not_Clear_Child_Collection() {
         ArrayList<AddressDTO> addressDTOs = addressRead();
         addNewAddress(addressDTOs);
         Customer customer = (Customer) session.load(Customer.class, 1);
@@ -73,7 +74,7 @@ public class SaveConcepts extends HibernateConceptBase {
     }
 
     @Test
-    public void donotReplaceCollection() {
+    public void donot_Replace_Collection() {
         ArrayList<AddressDTO> addressDTOs = addressRead();
         addNewAddress(addressDTOs);
         Customer customer = (Customer) session.load(Customer.class, 1);
@@ -88,7 +89,7 @@ public class SaveConcepts extends HibernateConceptBase {
     }
 
     @Test
-    public void editCollections() {
+    public void edit_Collections_When_Not_Updating_The_Entire_Graph() {
         ArrayList<AddressDTO> addressDTOs = addressRead();
         addNewAddress(addressDTOs);
         Customer customer = (Customer) session.load(Customer.class, 1);
@@ -96,6 +97,10 @@ public class SaveConcepts extends HibernateConceptBase {
         customer.editAddresses(editedAddresses);
         assert customer.getAddresses().length == 3;
         session.flush();
+
+        assert 1 == updateCount(Customer.class);
+        assert 0 == updateCount(Address.class);
+        assert 1 == insertCount(Address.class);        
     }
 
     private ArrayList<Address> mapAddresses(ArrayList<AddressDTO> addressDTOs, Customer customer) {
