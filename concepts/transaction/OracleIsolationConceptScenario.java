@@ -11,7 +11,7 @@ import java.sql.Connection;
 
 public class OracleIsolationConceptScenario  extends IsolationConceptBase {
     @Test
-    public void pessimisticLock() throws Exception {
+    public void pessimistic_Lock() throws Exception {
         i = new DatabaseUser(new OracleSettings(new AppConfigurationImpl()), Connection.TRANSACTION_SERIALIZABLE);
         you = new DatabaseUser(new OracleSettings(new AppConfigurationImpl()), Connection.TRANSACTION_SERIALIZABLE);
         i.getCustomer(Customers.AshokKumar);

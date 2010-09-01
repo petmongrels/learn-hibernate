@@ -14,9 +14,12 @@ public class TestDataCreator {
         final Accounts allAccounts = new Accounts(allCustomers);
         final Addresses allAddresses = new Addresses(allCustomers);
 
-        populateTestData(sqlServerSettings, allCities, allCustomers, allAccounts, allAddresses);
-        populateTestData(altSqlServerSettings, allCities, allCustomers, allAccounts, allAddresses);
-        populateTestData(oracleSettings, allCities, allCustomers, allAccounts, allAddresses);
+        if (args.length >= 1 && args[0].equals("sqlserver")) {
+            populateTestData(sqlServerSettings, allCities, allCustomers, allAccounts, allAddresses);
+            populateTestData(altSqlServerSettings, allCities, allCustomers, allAccounts, allAddresses);
+        } else {
+            populateTestData(oracleSettings, allCities, allCustomers, allAccounts, allAddresses);
+        }
     }
 
     private static void populateTestData(DatabaseSettings databaseSettings, Cities allCities, Customers allCustomers, Accounts allAccounts, Addresses allAddresses) throws Exception {
@@ -32,7 +35,7 @@ public class TestDataCreator {
         for (Address address : allAddresses) {
             final Object customerId = databaseConnection.queryValue("select Id from Customers where Name = ?", address.getCustomer().getName());
             databaseConnection.execute("insert into Addresses (Line1, Line2, CustomerId) values (?, ?, ?)",
-                                address.getLine1(), address.getLine2(), customerId);
+                    address.getLine1(), address.getLine2(), customerId);
         }
     }
 
@@ -40,7 +43,7 @@ public class TestDataCreator {
         for (Transaction transaction : new Transactions(allAccounts)) {
             final Object accountId = databaseConnection.queryValue("select Id from Accounts where AccountNumber = ?", transaction.getAccount().getNumber());
             databaseConnection.execute("insert into Transactions (Amount, Type, AccountId, Description) values (?, ?, ?, ?)",
-                                transaction.getAmount(), transaction.getType().toString(), accountId, transaction.getDescription());
+                    transaction.getAmount(), transaction.getType().toString(), accountId, transaction.getDescription());
         }
     }
 
@@ -48,7 +51,7 @@ public class TestDataCreator {
         for (Account account : allAccounts) {
             final Object customerId = databaseConnection.queryValue("select Id from Customers where Name = ?", account.getCustomer().getName());
             databaseConnection.execute("insert into Accounts (AccountNumber, CustomerId, Balance) values (?, ?, ?)",
-                                account.getNumber(), customerId, account.getBalance());
+                    account.getNumber(), customerId, account.getBalance());
         }
     }
 
@@ -56,7 +59,7 @@ public class TestDataCreator {
         for (Customer customer : allCustomers) {
             Object cityId = databaseConnection.queryValue("select Id from Cities where Name = ?", customer.getCity().getName());
             databaseConnection.execute("insert into Customers (Name, Email, CityId) values (?, ?, ?)",
-                                customer.getName(), customer.getEmail(), cityId);
+                    customer.getName(), customer.getEmail(), cityId);
         }
     }
 

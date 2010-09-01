@@ -30,7 +30,7 @@ public class OptimisticOfflineLockConcept {
     }
 
     @Test
-    public void freeMoney() throws Exception {
+    public void free_Money() throws Exception {
         Account myVersionOfAccount = i.getAccount("SB12345678");
         final BigDecimal balance = myVersionOfAccount.getBalance();
 
@@ -47,7 +47,7 @@ public class OptimisticOfflineLockConcept {
     }
 
     @Test
-    public void updateLock() throws Exception {
+    public void update_Lock() throws Exception {
         Account myVersionOfAccount = i.getAccount("SB12345678");
         Account yourVersionOfAccount = you.getAccount("SB12345678");
         

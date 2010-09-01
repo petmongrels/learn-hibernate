@@ -13,7 +13,7 @@ public class MappingConcept extends HibernateConceptBase {
     }
 
     @Test
-    public void useUniqueToDeleteOneToOneImplementedViaManyToOne() {
+    public void use_Unique_To_Delete_One_To_One_Implemented_Via_Many_To_One() {
         final Criteria criteria = session.createCriteria(Customer.class).add(Restrictions.eq("name", "Jaya Bhaduri"));
         Customer customer = (Customer) criteria.uniqueResult();
         session.delete(customer);

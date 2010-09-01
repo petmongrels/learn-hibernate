@@ -24,7 +24,7 @@ public class SqlServerIsolationConcept extends IsolationConceptBase {
     }
 
     @Test
-    public void readUncommited() throws Exception {
+    public void read_Uncommited() throws Exception {
         i = createDatabaseUser(Connection.TRANSACTION_READ_UNCOMMITTED);
         final String newEmail = newEmail();
         you.updateCustomerEmail(Customers.AshokKumar, newEmail);
@@ -33,7 +33,7 @@ public class SqlServerIsolationConcept extends IsolationConceptBase {
     }
 
     @Test
-    public void repeatableRead() throws Exception {
+    public void repeatable_Read() throws Exception {
         i = createDatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
         Customer customer = i.getCustomer(Customers.AshokKumar);
         try {
@@ -45,7 +45,7 @@ public class SqlServerIsolationConcept extends IsolationConceptBase {
     }
 
     @Test
-    public void lockEscalation() throws Exception {
+    public void lock_Escalation() throws Exception {
         i = createDatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
         i.getCustomersHavingInEmail("bollywood");
         try {
@@ -56,14 +56,14 @@ public class SqlServerIsolationConcept extends IsolationConceptBase {
     }
 
     @Test
-    public void noLockEscalation() throws Exception {
+    public void no_Lock_Escalation() throws Exception {
         i = createDatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
         i.getCustomersHavingInEmail("thoughtworks");
         you.updateCustomerEmail("Dharmendra", newEmail());
     }
 
     @Test
-    public void repeatableReadBlockedByOthersInsertsInefficient() throws Exception {
+    public void repeatable_Read_Blocked_By_Others_Inserts_Inefficient() throws Exception {
         i = createDatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
         i.getCustomersHavingInName("Ashok");
         you.createCustomer("Kishore Kumar", "kkumar@yahoo.com");
@@ -75,7 +75,7 @@ public class SqlServerIsolationConcept extends IsolationConceptBase {
     }
 
     @Test
-    public void phantomRead() throws Exception {
+    public void phantom_Read() throws Exception {
         final UUID uuid = UUID.randomUUID();
         i = createDatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
         ArrayList<Customer> customersList = i.getCustomersHavingInName("Ashok");
@@ -86,7 +86,7 @@ public class SqlServerIsolationConcept extends IsolationConceptBase {
     }
 
     @Test
-    public void noPhantomRead() throws Exception {
+    public void no_Phantom_Read() throws Exception {
         i = createDatabaseUser(Connection.TRANSACTION_SERIALIZABLE);
         ArrayList<Customer> customersList = i.getCustomersHavingInName("Ashok");
         try {

@@ -22,7 +22,7 @@ public class IsolationConceptAlt extends IsolationConceptBase {
     }
 
     @Test
-    public void readCommitedWhenSnapshotModeIsOff() throws Exception {
+    public void read_Commited_When_Snapshot_Mode_Is_Off() throws Exception {
         i = createDatabaseUser();
         you.updateCustomerEmail(Customers.AshokKumar, newEmail());
         try {

@@ -28,7 +28,7 @@ public class OracleSQLInjectionConcept {
     }
 
     @Test
-    public void executingAnotherCommandNotPossibleInOracle() throws Exception {
+    public void executing_Another_Command_Not_Possible_In_Oracle() throws Exception {
         try {
             connection.queryRows("select Id from Customers where Name = '" + getNameWithAnotherStatementAppended() + "'");
             assert false;
@@ -37,7 +37,7 @@ public class OracleSQLInjectionConcept {
     }
 
     @Test
-    public void loadingMoreRows() throws Exception {
+    public void loading_More_Rows() throws Exception {
         final ArrayList<Object[]> rows = connection.queryRows("select Id from Customers where Name = '" + getNameWithExtraClause() + "'");
         assert rows.size() > 1;
     }
@@ -51,7 +51,7 @@ public class OracleSQLInjectionConcept {
     }
 
     @Test
-    public void executeUsingPreparedStatement() throws Exception {
+    public void execute_Using_Prepared_Statement() throws Exception {
         ArrayList<Object[]> customers = connection.queryRows("select Id from Customers where Name = ?", getNameWithExtraClause());
         assert customers.size() == 0;
         ArrayList<Object[]> transactions = connection.queryRows("select Id from Transactions");

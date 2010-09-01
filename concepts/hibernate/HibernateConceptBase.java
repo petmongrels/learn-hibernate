@@ -3,6 +3,7 @@ package hibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
+import org.hibernate.stat.Statistics;
 import org.testng.annotations.*;
 
 public class HibernateConceptBase {
@@ -12,8 +13,8 @@ public class HibernateConceptBase {
     @BeforeClass
     public void testFixtureSetup() {
         sessionFactory = sessionFactoryWrapper().getSessionFactory();
-        sessionFactory.getStatistics().setStatisticsEnabled(true);
-        sessionFactory.getStatistics().clear();
+        statistics().setStatisticsEnabled(true);
+        statistics().clear();
     }
 
     protected ISessionFactoryWrapper sessionFactoryWrapper() {
@@ -32,7 +33,7 @@ public class HibernateConceptBase {
     }
 
     protected void clearStatistics() {
-        sessionFactory.getStatistics().clear();
+        statistics().clear();
     }
 
     protected void clearSession() {
@@ -53,18 +54,26 @@ public class HibernateConceptBase {
     }
 
     protected long updateCount(Class aClass) {
-        return sessionFactory.getStatistics().getEntityStatistics(aClass.getName()).getUpdateCount();
+        return statistics().getEntityStatistics(aClass.getName()).getUpdateCount();
     }
 
     protected long insertCount(Class aClass) {
-        return sessionFactory.getStatistics().getEntityStatistics(aClass.getName()).getInsertCount();
+        return statistics().getEntityStatistics(aClass.getName()).getInsertCount();
+    }
+
+    protected Statistics statistics() {
+        return sessionFactory.getStatistics();
     }
 
     protected long loadCount() {
-        return sessionFactory.getStatistics().getEntityLoadCount();
+        return statistics().getEntityLoadCount();
     }
 
     protected long loadCount(Class aClass) {
-        return sessionFactory.getStatistics().getEntityStatistics(aClass.getName()).getLoadCount();
+        return statistics().getEntityStatistics(aClass.getName()).getLoadCount();
+    }
+
+    protected long statementCount() {
+        return statistics().getPrepareStatementCount();
     }
 }

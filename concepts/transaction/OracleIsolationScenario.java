@@ -21,7 +21,7 @@ public class OracleIsolationScenario extends IsolationConceptBase {
     }
 
     @Test
-    public void writePossibleEvenWhenSerializableLockHeld() throws Exception {
+    public void write_Possible_Even_When_Serializable_Lock_Held() throws Exception {
         i.getCustomer(Customers.AshokKumar);
         you.getCustomer(Customers.AshokKumar);
         i.updateCustomerEmail(Customers.AshokKumar, newEmail());

@@ -27,7 +27,7 @@ public class SqlServerSQLInjectionConcept {
     }
 
     @Test
-    public void executeUsingStatement() throws Exception {
+    public void execute_Using_Statement() throws Exception {
         ArrayList<Object[]> customers = connection.queryRows("select Id from Customers where Name = '" + getName() + "'");
         assert customers.size() == 1;
         ArrayList<Object[]> transactions = connection.queryRows("select Id from Transactions");
@@ -39,7 +39,7 @@ public class SqlServerSQLInjectionConcept {
     }
 
     @Test
-    public void executeUsingPreparedStatement() throws Exception {
+    public void execute_Using_Prepared_Statement() throws Exception {
         ArrayList<Object[]> customers = connection.queryRows("select Id from Customers where Name = ?", getName());
         assert customers.size() == 0;
         ArrayList<Object[]> transactions = connection.queryRows("select Id from Transactions");

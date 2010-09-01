@@ -38,7 +38,7 @@ public class VersioningConcept extends HibernateConceptBase {
     }
 
     @Test
-    public void usingVersionColumn() {
+    public void using_Version_Column() {
         final Customer customer = i.setCustomerEmail(1, "ask" + UUID.randomUUID().toString() + "@thoughtworks.com");
         final Customer yourCustomer = you.setCustomerEmail(1, "ak" + UUID.randomUUID().toString() + "@thoughtworks.com");
         
@@ -53,7 +53,7 @@ public class VersioningConcept extends HibernateConceptBase {
     }
 
     @Test
-    public void disconnectAndSaveWithOldVersion() {
+    public void disconnect_And_Save_With_Old_Version() {
         Customer customer = i.getCustomer(1);
         int disconnectedCustomersVersion = customer.getVersion();
         i.commit();
@@ -73,7 +73,7 @@ public class VersioningConcept extends HibernateConceptBase {
     }
 
     @Test
-    public void verifyVersionYourselfForDisconnectLockingScope(){
+    public void verify_Version_Yourself_For_Disconnect_Locking_Scope(){
         Customer customer = i.getCustomer(1);
         int disconnectedCustomersVersion = customer.getVersion();
         i.commit();
@@ -96,7 +96,7 @@ public class VersioningConcept extends HibernateConceptBase {
     }
 
     @Test
-    public void noChangeAndFlushDoesntChangeTheVersion(){
+    public void no_Change_And_Flush_Doesnt_Change_The_Version(){
         Customer customer = i.getCustomer(1);
         int version = customer.getVersion();
         session.flush();
@@ -104,7 +104,7 @@ public class VersioningConcept extends HibernateConceptBase {
     }
 
     @Test
-    public void noChangeToParentDoesnUpdateVersion(){
+    public void no_Change_To_Parent_Doesnt_Update_Its_Version(){
         Customer customer = i.getCustomer(1);
         int version = customer.getVersion();
         i.withdrawFromFirstAccount(customer, new BigDecimal(100));
@@ -114,7 +114,7 @@ public class VersioningConcept extends HibernateConceptBase {
     }
 
     @Test
-    public void newChildChangesTheParentsVersion() {
+    public void new_Child_Changes_The_Parents_Version() {
         Customer customer = i.getCustomer(1);
         int version = customer.getVersion();
         i.addAccount(customer, new BigDecimal(100), new SavingsAccountNumberProvider());
@@ -124,7 +124,7 @@ public class VersioningConcept extends HibernateConceptBase {
     }
 
     @Test
-    public void saveOrUpdateWithoutChangeDoesntChangeTheVersion() {
+    public void save_Or_Update_Without_Change_Doesnt_Change_The_Version() {
         Customer customer = (Customer) session.load(Customer.class, 1);
         int version = customer.getVersion();
         session.saveOrUpdate(customer);

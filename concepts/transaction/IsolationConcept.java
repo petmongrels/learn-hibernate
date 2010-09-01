@@ -19,7 +19,7 @@ public class IsolationConcept extends IsolationConceptBase {
     }
 
     @Test
-    public void readCommited() throws Exception {
+    public void read_Commited() throws Exception {
         i = new DatabaseUser(Databases.Main, Connection.TRANSACTION_READ_COMMITTED);
         final String newEmail = newEmail();
         you.updateCustomerEmail(Customers.AshokKumar, newEmail);
@@ -30,7 +30,7 @@ public class IsolationConcept extends IsolationConceptBase {
     }
 
     @Test
-    public void nonRepeatableRead() throws Exception {
+    public void non_Repeatable_Read() throws Exception {
         i = new DatabaseUser(Databases.Main, Connection.TRANSACTION_READ_COMMITTED);
         Customer customer = i.getCustomer(Customers.AshokKumar);
         you.updateCustomerEmail(Customers.AshokKumar, newEmail());
@@ -39,7 +39,7 @@ public class IsolationConcept extends IsolationConceptBase {
     }
 
     @Test
-    public void updateOnSameRowBlocks() throws Exception {
+    public void update_On_Same_Row_Blocks() throws Exception {
         i = createDatabaseUser(Connection.TRANSACTION_READ_COMMITTED);
         you.updateCustomerEmail(Customers.AshokKumar, newEmail());
         try {

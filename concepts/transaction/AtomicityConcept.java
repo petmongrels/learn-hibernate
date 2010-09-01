@@ -43,7 +43,7 @@ public class AtomicityConcept {
     }
 
     @Test
-    public void noAtomicity() throws Exception {
+    public void no_Atomicity() throws Exception {
         try {
             BankTransaction bankTransaction = account.withdraw(new BigDecimal(5000.50));
             connection.execute("update Accounts set Balance = ? where Id = ?", account.getBalance(), account.getId());

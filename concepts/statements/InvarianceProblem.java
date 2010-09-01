@@ -39,7 +39,7 @@ public class InvarianceProblem extends HibernateConceptBase {
     }
 
     @Test
-    public void dontCheckUniquenessInCodeBecauseOfRaceConditions() {
+    public void dont_Check_Uniqueness_In_Code_Because_Of_Race_Conditions() {
         List list = i.createCriteria(City.class).list();
 
         assertCityAlreadyNotPresent(new City("Chennai"), i);
@@ -54,7 +54,7 @@ public class InvarianceProblem extends HibernateConceptBase {
     }
 
     @Test
-    public void letDatabaseVerifyUniqueness() {
+    public void let_Database_Verify_Uniqueness() {
         Customer customerOne = (Customer) i.load(Customer.class, 1);
         Customer customerTwo = (Customer) i.load(Customer.class, 2);
         try {

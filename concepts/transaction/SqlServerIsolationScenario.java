@@ -15,7 +15,7 @@ public class SqlServerIsolationScenario extends IsolationConceptBase {
     }
 
     @Test
-    public void pessimisticLock() throws Exception {
+    public void pessimistic_Lock() throws Exception {
         you = createDatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
         i = createDatabaseUser(Connection.TRANSACTION_REPEATABLE_READ);
         i.getCustomer(Customers.AshokKumar);

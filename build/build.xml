@@ -16,9 +16,15 @@
         <sql-exec file="schema.sql" database="LearnHibernateAlt"/>
     </target>
 
-    <target name="test.data" depends="sql.schema, oracle.schema">
-        <java classname="TestDataCreator" classpath="../out/production/learn-hibernate;../lib/jtds-1.2.5.jar;../lib/ojdbc14_g.jar" dir=".." fork="true" failonerror="true"/>
+    <target name="sql.test.data" depends="sql.schema">
+        <test-data database="sqlserver"/>
     </target>
+
+    <target name="oracle.test.data" depends="oracle.schema">
+        <test-data database="oracle"/>
+    </target>
+
+    <target name="test.data" depends="sql.test.data, oracle.test.data"/>
 
     <target name="oracle.db" depends="oracle.no.db">
         <ora-exec file="@database.sql" user="system"/>
@@ -49,6 +55,15 @@
             <exec executable="sqlcmd" dir="../database/sqlserver">
                 <arg line="-S ${sql.server} -b -E -i @{file} -v DatabaseName=@{database}"/>
             </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="test-data">
+        <attribute name="database"/>
+        <sequential>
+            <java classname="TestDataCreator" classpath="../out/production/learn-hibernate;../lib/jtds-1.2.5.jar;../lib/ojdbc14_g.jar" dir=".." fork="true" failonerror="true">
+                <arg value="@{database}"/>
+            </java>
         </sequential>
     </macrodef>
 </project>

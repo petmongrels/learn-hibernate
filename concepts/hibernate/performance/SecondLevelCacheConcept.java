@@ -31,7 +31,7 @@ public class SecondLevelCacheConcept extends HibernateConceptBase {
     }
 
     @Test
-    public void loadsFromCache() {
+    public void loads_From_Cache() {
         loadAddress();
         reopenSession();
         loadAddress();
@@ -40,7 +40,7 @@ public class SecondLevelCacheConcept extends HibernateConceptBase {
     }
 
     @Test
-    public void loadsFromCacheOnlyAfterSessionIsClosedOnce() {
+    public void loads_From_Cache_Only_After_Session_Is_Closed_Once() {
         loadAddress();
         clearSession();
         loadAddress();
@@ -49,17 +49,7 @@ public class SecondLevelCacheConcept extends HibernateConceptBase {
     }
 
     @Test
-    public void loadThroughCollectionAddsToTheCache() {
-        Customer customer = (Customer) session.load(Customer.class, 1);
-        loadAddresses(customer);
-        reopenSession();
-        loadAddress();
-
-        assert 0 == addressLoadCount();
-    }
-
-    @Test
-    public void loadingViaCollectionDoesntHitTheCache() {
+    public void loading_Via_Collection_Doesnt_Hit_The_Cache() {
         Customer customer = (Customer) session.load(Customer.class, 1);
         loadAddresses(customer);
         reopenSession();
